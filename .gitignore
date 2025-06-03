@@ -1,0 +1,11 @@
+# Dependencies
+server/node_modules
+web/node_modules
+
+# Build outputs
+server/dist
+web/dist
+
+# Envs
+server/.env
+web/.env

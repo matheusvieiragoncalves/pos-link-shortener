@@ -12,8 +12,8 @@
 
 ## RN (Regras de negócio)
 
-  - [ ]  Não deve ser possível criar um link com encurtamento mal formatado
-  - [ ]  Não deve ser possível criar um link com encurtamento já existente
+  - [ ]  Não deve ser possível criar um link com encurtamento mal formatado;
+  - [ ]  Não deve ser possível criar um link com encurtamento já existente;
   - [ ]  Siga o mais fielmente possível o layout do Figma;
   - [ ]  Deve possuir três páginas:
     - [ ]  A página raiz (/) que exibe o formulário de cadastro e a listagem dos links cadastrados;
@@ -26,6 +26,6 @@
   - [ ]  É obrigatória a criação de uma aplicação React no formato SPA utilizando o Vite como `bundler`;
   - [ ]  Trabalhe com elementos que tragam uma boa experiência ao usuário (`empty state`, ícones de carregamento, bloqueio de ações a depender do estado da aplicação);
   - [ ]  Foco na responsividade: essa aplicação deve ter um bom uso tanto em desktops quanto em celulares;
-  - [ ]  Obrigatório o uso de Typescript
-  - [ ]  Obrigatório o uso de React
-  - [ ]  Obrigatório o uso de Vite sem framework
+  - [ ]  Obrigatório o uso de Typescript;
+  - [ ]  Obrigatório o uso de React;
+  - [ ]  Obrigatório o uso de Vite sem framework.

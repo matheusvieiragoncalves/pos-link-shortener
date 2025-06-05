@@ -1,7 +1,9 @@
+import type { ICreateLinkOutput } from '@/@types/create-link-output';
 import type { ILinksRepository } from '@/repositories/links.repository';
 import type { Either } from '@/shared/either';
-import { isLeft } from '@/shared/either';
+import { isLeft, makeLeft, unwrapEither } from '@/shared/either';
 import { z } from 'zod';
+import { CustomUrlUnavailableError } from './errors/custom-url-unavailable.error';
 
 const createLinkSchema = z.object({
 	originalUrl: z.string().url(),
@@ -10,22 +12,19 @@ const createLinkSchema = z.object({
 
 type ICreateLinkInput = z.infer<typeof createLinkSchema>;
 
-interface ICreateLinkOutput {
-	id: string;
-	originalUrl: string;
-	customUrl: string;
-	createdAt: Date;
-}
-
 export class CreateLinkUseCase {
 	constructor(private linksRepository: ILinksRepository) {}
 
 	async execute(
 		data: ICreateLinkInput
-	): Promise<Either<Error, ICreateLinkOutput>> {
+	): Promise<Either<CustomUrlUnavailableError, ICreateLinkOutput>> {
 		const { customUrl, originalUrl } = createLinkSchema.parse(data);
 
-		// Todo: add logic to check if the custom URL already exists in the database
+		const existingLink = await this.linksRepository.findByCustomUrl(customUrl);
+
+		if (unwrapEither(existingLink)) {
+			return makeLeft(new CustomUrlUnavailableError());
+		}
 
 		const result = await this.linksRepository.create({
 			customUrl,

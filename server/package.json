@@ -6,7 +6,10 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch --env-file .env src/infra/http/server.ts",
-    "start": ""
+    "test": "vitest run --project unit",
+    "test:e2e": "vitest run --project e2e",
+    "test:watch": "vitest --project unit",
+    "test:e2e:watch": "vitest --project e2e"
   },
   "keywords": [],
   "author": "",
@@ -15,12 +18,18 @@
     "@fastify/cors": "11.0.1",
     "fastify": "5.3.3",
     "fastify-type-provider-zod": "4.0.2",
+    "dayjs": "1.11.13",
     "zod": "3.25.50"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
+    "@faker-js/faker": "9.8.0",
     "@types/node": "22.15.29",
+    "@types/supertest": "6.0.3",
+    "supertest": "7.1.1",
     "tsx": "4.19.4",
-    "typescript": "5.8.3"
+    "typescript": "5.8.3",
+    "vite-tsconfig-paths": "5.1.4",
+    "vitest": "3.2.1"
   }
 }

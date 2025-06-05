@@ -3,6 +3,7 @@ export interface ILink {
 	originalUrl: string;
 	customUrl: string;
 	createdAt: Date;
+	accessCount: number;
 }
 
 export interface ICreateLinkInput {

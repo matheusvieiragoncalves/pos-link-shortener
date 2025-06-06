@@ -3,38 +3,38 @@ import type { ILinksRepository } from '@/repositories/links.repository';
 import type { Either } from '@/shared/either';
 import { isLeft, makeLeft, unwrapEither } from '@/shared/either';
 import { z } from 'zod';
-import { CustomUrlUnavailableError } from './errors/custom-url-unavailable.error';
+import { ShortUrlUnavailableError } from './errors/short-url-unavailable.error';
 
 const createLinkSchema = z.object({
-	originalUrl: z.string().url(),
-	customUrl: z.string().url(),
+  originalUrl: z.string().url(),
+  shortUrl: z.string().url()
 });
 
 type ICreateLinkInput = z.infer<typeof createLinkSchema>;
 
 export class CreateLinkUseCase {
-	constructor(private linksRepository: ILinksRepository) {}
+  constructor(private linksRepository: ILinksRepository) {}
 
-	async execute(
-		data: ICreateLinkInput
-	): Promise<Either<CustomUrlUnavailableError, ICreateLinkOutput>> {
-		const { customUrl, originalUrl } = createLinkSchema.parse(data);
+  async execute(
+    data: ICreateLinkInput
+  ): Promise<Either<ShortUrlUnavailableError, ICreateLinkOutput>> {
+    const { shortUrl, originalUrl } = createLinkSchema.parse(data);
 
-		const existingLink = await this.linksRepository.findByCustomUrl(customUrl);
+    const existingLink = await this.linksRepository.findByShortUrl(shortUrl);
 
-		if (unwrapEither(existingLink)) {
-			return makeLeft(new CustomUrlUnavailableError());
-		}
+    if (unwrapEither(existingLink)) {
+      return makeLeft(new ShortUrlUnavailableError());
+    }
 
-		const result = await this.linksRepository.create({
-			customUrl,
-			originalUrl,
-		});
+    const result = await this.linksRepository.create({
+      shortUrl,
+      originalUrl
+    });
 
-		if (isLeft(result)) {
-			return result;
-		}
+    if (isLeft(result)) {
+      return result;
+    }
 
-		return result;
-	}
+    return result;
+  }
 }

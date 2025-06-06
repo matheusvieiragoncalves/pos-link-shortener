@@ -5,49 +5,51 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
 
 export const createLinksRoute: FastifyPluginAsyncZod = async (app) => {
-	const linksRepository = new InMemoryLinksRepository();
-	const createLinkUseCase = new CreateLinkUseCase(linksRepository);
+  const linksRepository = new InMemoryLinksRepository();
+  const createLinkUseCase = new CreateLinkUseCase(linksRepository);
 
-	app.post(
-		'/links',
-		{
-			schema: {
-				body: z.object({
-					originalUrl: z.string().url(),
-					customUrl: z.string().url(),
-				}),
-				response: {
-					200: z.object({
-						id: z.string(),
-						originalUrl: z.string(),
-						customUrl: z.string(),
-						createdAt: z.date(),
-					}),
-					400: z.object({
-						message: z.string(),
-					}),
-				},
-			},
-		},
-		async (request, reply) => {
-			const { customUrl, originalUrl } = request.body;
+  app.post(
+    '/links',
+    {
+      schema: {
+        body: z.object({
+          originalUrl: z.string().url(),
+          shortUrl: z.string().url()
+        }),
+        response: {
+          200: z.object({
+            link: z.object({
+              id: z.string(),
+              originalUrl: z.string(),
+              shortUrl: z.string(),
+              createdAt: z.date()
+            })
+          }),
+          400: z.object({
+            message: z.string()
+          })
+        }
+      }
+    },
+    async (request, reply) => {
+      const { shortUrl, originalUrl } = request.body;
 
-			const result = await createLinkUseCase.execute({
-				customUrl,
-				originalUrl,
-			});
+      const result = await createLinkUseCase.execute({
+        shortUrl,
+        originalUrl
+      });
 
-			if (isLeft(result)) {
-				const { message } = unwrapEither(result);
+      if (isLeft(result)) {
+        const { message } = unwrapEither(result);
 
-				return reply.status(400).send({
-					message,
-				});
-			}
+        return reply.status(400).send({
+          message
+        });
+      }
 
-			const linkCreated = unwrapEither(result);
+      const linkCreated = unwrapEither(result);
 
-			return reply.status(200).send(linkCreated);
-		}
-	);
+      return reply.status(200).send(linkCreated);
+    }
+  );
 };

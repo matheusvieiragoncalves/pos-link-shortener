@@ -7,7 +7,7 @@
   - [ ]  Deve ser possível deletar um link;
   - [x]  Deve ser possível obter a URL original por meio de uma URL encurtada;
   - [x]  Deve ser possível listar todas as URL’s cadastradas;
-  - [ ]  Deve ser possível incrementar a quantidade de acessos de um link;
+  - [x]  Deve ser possível incrementar a quantidade de acessos de um link;
   - [ ]  Deve ser possível exportar os links criados em um CSV.
 
 ## RN (Regras de negócio)

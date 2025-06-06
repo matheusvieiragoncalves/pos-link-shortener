@@ -1,12 +1,12 @@
 export interface ILink {
-	id: string;
-	originalUrl: string;
-	customUrl: string;
-	createdAt: Date;
-	accessCount: number;
+  id: string;
+  originalUrl: string;
+  shortUrl: string;
+  createdAt: Date;
+  accessCount: number;
 }
 
 export interface ICreateLinkInput {
-	customUrl: string;
-	originalUrl: string;
+  shortUrl: string;
+  originalUrl: string;
 }

@@ -27,7 +27,7 @@ describe('Create Links Use Case', () => {
 
   it('should not to be able get link by custom url if not exists', async () => {
     const result = await sut.execute({
-      shortUrl: 'https://non-existing-url.com'
+      shortUrl: 'non-existing-url'
     });
 
     expect(unwrapEither(result)).toBeNull();

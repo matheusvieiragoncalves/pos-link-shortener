@@ -5,7 +5,7 @@ import { z } from 'zod';
 import type { ResourceNotFoundError } from './errors/resource-not-found.error';
 
 const getLinkByShortUrlSchema = z.object({
-  shortUrl: z.string().url()
+  shortUrl: z.string()
 });
 
 type IGetLinkByShortUrlInput = z.infer<typeof getLinkByShortUrlSchema>;

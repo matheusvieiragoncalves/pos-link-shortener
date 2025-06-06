@@ -7,7 +7,7 @@ import { ShortUrlUnavailableError } from './errors/short-url-unavailable.error';
 
 const createLinkSchema = z.object({
   originalUrl: z.string().url(),
-  shortUrl: z.string().url()
+  shortUrl: z.string()
 });
 
 type ICreateLinkInput = z.infer<typeof createLinkSchema>;

@@ -14,13 +14,13 @@ export const createLinksRoute: FastifyPluginAsyncZod = async (app) => {
       schema: {
         body: z.object({
           originalUrl: z.string().url(),
-          shortUrl: z.string().url()
+          shortUrl: z.string()
         }),
         response: {
           200: z.object({
             link: z.object({
               id: z.string(),
-              originalUrl: z.string(),
+              originalUrl: z.string().url(),
               shortUrl: z.string(),
               createdAt: z.date()
             })

@@ -17,7 +17,7 @@ describe('Create Links Use Case', () => {
 
   it('should to be able create a link successfully', async () => {
     const input: Pick<ILink, 'shortUrl' | 'originalUrl'> = {
-      shortUrl: 'https://example.com',
+      shortUrl: 'example',
       originalUrl: 'https://original-example.com'
     };
 
@@ -27,7 +27,7 @@ describe('Create Links Use Case', () => {
   });
 
   it('should not to be able create a link if custom url alredy exists', async () => {
-    const sameShortUrl = 'https://example.com/2';
+    const sameShortUrl = 'example-2';
 
     linksRepository.items.push({
       id: randomUUID(),

@@ -30,7 +30,7 @@ describe('Create Links Use Case', () => {
 
     for (let i = 1; i <= AMOUNT_LINKS_TO_TEST; i++) {
       const link = makeLinksInMemory({
-        shortUrl: `https://example.com/${i}`,
+        shortUrl: `example-${i}`,
         createdAt: dayjs().subtract(i, 'day').toDate()
       });
       linksRepository.items.push(link);
@@ -76,7 +76,7 @@ describe('Create Links Use Case', () => {
 
     for (let i = 1; i <= AMOUNT_LINKS_TO_TEST; i++) {
       const link = makeLinksInMemory({
-        shortUrl: `https://example.com/${i}`,
+        shortUrl: `example-${i}`,
         createdAt: dayjs().add(i, 'day').toDate()
       });
       linksRepository.items.push(link);

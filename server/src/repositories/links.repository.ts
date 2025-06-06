@@ -25,9 +25,11 @@ export interface ILinksRepository {
     data: ICreateLinkInput
   ): Promise<Either<ShortUrlUnavailableError, ICreateLinkOutput>>;
 
-  deleteLink(id: string): Promise<Either<Error, void>>;
-
   incrementLinkAccessCountById(
     id: string
-  ): Promise<Either<ResourceNotFoundError, void>>;
+  ): Promise<Either<ResourceNotFoundError, null>>;
+
+  deleteByShortUrl(
+    shortUrl: string
+  ): Promise<Either<ResourceNotFoundError, null>>;
 }

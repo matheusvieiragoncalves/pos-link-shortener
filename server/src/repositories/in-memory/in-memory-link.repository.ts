@@ -85,7 +85,7 @@ export class InMemoryLinksRepository implements ILinksRepository {
 
   async incrementLinkAccessCountById(
     id: string
-  ): Promise<Either<ResourceNotFoundError, void>> {
+  ): Promise<Either<ResourceNotFoundError, null>> {
     const link = this.items.find((item) => item.id === id);
 
     if (!link) {
@@ -94,11 +94,18 @@ export class InMemoryLinksRepository implements ILinksRepository {
 
     link.accessCount += 1;
 
-    return makeRight(undefined);
+    return makeRight(null);
   }
 
-  async deleteLink(id: string): Promise<Either<Error, void>> {
-    this.items = this.items.filter((item) => item.id !== id);
-    return makeRight(undefined);
+  async deleteByShortUrl(
+    shortUrl: string
+  ): Promise<Either<ResourceNotFoundError, null>> {
+    const index = this.items.findIndex((i) => i.shortUrl === shortUrl);
+
+    if (index < 0) return makeLeft(new ResourceNotFoundError());
+
+    this.items.splice(index, 1);
+
+    return makeRight(null);
   }
 }

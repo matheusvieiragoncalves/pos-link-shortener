@@ -26,7 +26,7 @@ describe('Create Links Use Case', () => {
     expect(isRight(result)).toBeTruthy();
   });
 
-  it('should not to be able create a link if custom url alredy exists', async () => {
+  it('should not to be able create a link if short url alredy exists', async () => {
     const sameShortUrl = 'example-2';
 
     linksRepository.items.push({

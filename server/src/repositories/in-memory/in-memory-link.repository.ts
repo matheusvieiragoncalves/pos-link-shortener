@@ -46,11 +46,11 @@ export class InMemoryLinksRepository implements ILinksRepository {
 
   async findByShortUrl(
     shortUrl: string
-  ): Promise<Either<never, IGetLinkOutput | null>> {
+  ): Promise<Either<ResourceNotFoundError, IGetLinkOutput>> {
     const link = this.items.find((item) => item.shortUrl === shortUrl);
 
     if (!link) {
-      return makeRight(null);
+      return makeLeft(new ResourceNotFoundError());
     }
 
     return makeRight({ link: { ...link } });
@@ -73,7 +73,7 @@ export class InMemoryLinksRepository implements ILinksRepository {
       (item) => item.shortUrl === shortUrl
     );
 
-    // Check if the custom URL already exists in the repository - simulating a database unique constraint
+    // Check if the short URL already exists in the repository - simulating a database unique constraint
     if (urlAlredyExists) {
       return makeLeft(new ShortUrlUnavailableError());
     }
@@ -83,10 +83,10 @@ export class InMemoryLinksRepository implements ILinksRepository {
     return makeRight({ link });
   }
 
-  async incrementLinkAccessCountById(
-    id: string
+  async incrementLinkAccessCountByShortUrl(
+    shortUrl: string
   ): Promise<Either<ResourceNotFoundError, null>> {
-    const link = this.items.find((item) => item.id === id);
+    const link = this.items.find((item) => item.shortUrl === shortUrl);
 
     if (!link) {
       return makeLeft(new ResourceNotFoundError());

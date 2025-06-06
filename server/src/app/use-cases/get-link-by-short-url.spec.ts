@@ -2,7 +2,8 @@ import { InMemoryLinksRepository } from '@/repositories/in-memory/in-memory-link
 import { isLeft, isRight, unwrapEither } from '@/shared/either';
 import { makeLinksInMemory } from 'test/factories/make-links-in-memory';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { GetLinkByShortUrlUseCase } from './get-link-by-custom-url';
+import { ResourceNotFoundError } from './errors/resource-not-found.error';
+import { GetLinkByShortUrlUseCase } from './get-link-by-short-url';
 
 let linksRepository: InMemoryLinksRepository;
 let sut: GetLinkByShortUrlUseCase;
@@ -13,7 +14,7 @@ describe('Create Links Use Case', () => {
     sut = new GetLinkByShortUrlUseCase(linksRepository);
   });
 
-  it('should to be able get link by custom url', async () => {
+  it('should to be able get link by short url', async () => {
     const link = makeLinksInMemory();
 
     linksRepository.items.push(link);
@@ -25,12 +26,12 @@ describe('Create Links Use Case', () => {
     expect(isRight(result)).toBeTruthy();
   });
 
-  it('should not to be able get link by custom url if not exists', async () => {
+  it('should not to be able get link by short url if not exists', async () => {
     const result = await sut.execute({
       shortUrl: 'non-existing-url'
     });
 
-    expect(unwrapEither(result)).toBeNull();
+    expect(unwrapEither(result)).instanceOf(ResourceNotFoundError);
   });
 
   it('should be able to increment the link access counter whenever it is clicked', async () => {

@@ -10,7 +10,7 @@ import type { Either } from '@/shared/either';
 export interface ILinksRepository {
   findByShortUrl(
     shortUrl: string
-  ): Promise<Either<never, IGetLinkOutput | null>>;
+  ): Promise<Either<ResourceNotFoundError, IGetLinkOutput>>;
 
   fetchLinksPaginated(
     page?: number,
@@ -25,8 +25,8 @@ export interface ILinksRepository {
     data: ICreateLinkInput
   ): Promise<Either<ShortUrlUnavailableError, ICreateLinkOutput>>;
 
-  incrementLinkAccessCountById(
-    id: string
+  incrementLinkAccessCountByShortUrl(
+    shortUrl: string
   ): Promise<Either<ResourceNotFoundError, null>>;
 
   deleteByShortUrl(

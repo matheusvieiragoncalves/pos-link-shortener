@@ -15,7 +15,7 @@ export class GetLinkByShortUrlUseCase {
 
   async execute(
     data: IGetLinkByShortUrlInput
-  ): Promise<Either<ResourceNotFoundError, IGetLinkOutput | null>> {
+  ): Promise<Either<ResourceNotFoundError, IGetLinkOutput>> {
     const { shortUrl } = getLinkByShortUrlSchema.parse(data);
 
     const result = await this.linksRepository.findByShortUrl(shortUrl);
@@ -24,22 +24,16 @@ export class GetLinkByShortUrlUseCase {
       return result;
     }
 
-    const existingLink = unwrapEither(result);
-
-    if (!existingLink) {
-      return makeRight(null);
-    }
+    const { link } = unwrapEither(result);
 
     const incrementResult =
-      await this.linksRepository.incrementLinkAccessCountById(
-        existingLink.link.id
+      await this.linksRepository.incrementLinkAccessCountByShortUrl(
+        link.shortUrl
       );
 
     if (isLeft(incrementResult)) {
       return incrementResult;
     }
-
-    const { link } = existingLink;
 
     return makeRight({ link: { ...link, accessCount: link.accessCount + 1 } });
   }

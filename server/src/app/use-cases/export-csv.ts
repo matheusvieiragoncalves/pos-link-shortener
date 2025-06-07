@@ -13,11 +13,10 @@ export class ExportLinksUseCase {
     const csv = stringify({
       header: true,
       columns: [
-        { key: 'id', header: 'ID' },
         { key: 'originalUrl', header: 'URL original' },
         { key: 'shortUrl', header: 'URL curta' },
-        { key: 'createdAt', header: 'Criado em' },
-        { key: 'accessCount', header: 'Quantidade de acessos' }
+        { key: 'accessCount', header: 'Quantidade de acessos' },
+        { key: 'createdAt', header: 'Criado em' }
       ]
     });
 
@@ -27,11 +26,11 @@ export class ExportLinksUseCase {
       cursor,
       new Transform({
         objectMode: true,
-        transform(chunks: unknown[], _, cb) {
+        transform(chunks: unknown[], _, callback) {
           for (const chunk of chunks) {
             this.push(chunk);
           }
-          cb();
+          callback();
         }
       }),
       csv,

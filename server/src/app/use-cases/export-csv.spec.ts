@@ -51,41 +51,36 @@ describe('Export Links', () => {
     // console.log(csvAsArray);
 
     expect(csvAsArray).toEqual([
-      ['ID', 'URL original', 'URL curta', 'Criado em', 'Quantidade de acessos'],
+      ['URL original', 'URL curta', 'Quantidade de acessos', 'Criado em'],
       [
-        link1.id,
         link1.originalUrl,
         link1.shortUrl,
-        expect.any(String),
-        link1.accessCount.toString()
+        link1.accessCount.toString(),
+        expect.any(String)
       ],
       [
-        link2.id,
         link2.originalUrl,
         link2.shortUrl,
-        expect.any(String),
-        link2.accessCount.toString()
+        link2.accessCount.toString(),
+        expect.any(String)
       ],
       [
-        link3.id,
         link3.originalUrl,
         link3.shortUrl,
-        expect.any(String),
-        link3.accessCount.toString()
+        link3.accessCount.toString(),
+        expect.any(String)
       ],
       [
-        link4.id,
         link4.originalUrl,
         link4.shortUrl,
-        expect.any(String),
-        link4.accessCount.toString()
+        link4.accessCount.toString(),
+        expect.any(String)
       ],
       [
-        link5.id,
         link5.originalUrl,
         link5.shortUrl,
-        expect.any(String),
-        link5.accessCount.toString()
+        link5.accessCount.toString(),
+        expect.any(String)
       ]
     ]);
   });

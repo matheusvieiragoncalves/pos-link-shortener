@@ -1,5 +1,5 @@
 export interface ILink {
-  id: string;
+  id: number;
   originalUrl: string;
   shortUrl: string;
   createdAt: Date;

@@ -30,6 +30,7 @@ describe('Create Links Use Case', () => {
 
     for (let i = 1; i <= AMOUNT_LINKS_TO_TEST; i++) {
       const link = makeLinksInMemory({
+        id: linksRepository.createAutoIncrementId(),
         shortUrl: `example-${i}`,
         createdAt: dayjs().subtract(i, 'day').toDate()
       });
@@ -76,6 +77,7 @@ describe('Create Links Use Case', () => {
 
     for (let i = 1; i <= AMOUNT_LINKS_TO_TEST; i++) {
       const link = makeLinksInMemory({
+        id: linksRepository.createAutoIncrementId(),
         shortUrl: `example-${i}`,
         createdAt: dayjs().add(i, 'day').toDate()
       });

@@ -15,11 +15,21 @@ describe('Export Links', () => {
   });
 
   it('should be able to export links', async () => {
-    const link1 = makeLinksInMemory();
-    const link2 = makeLinksInMemory();
-    const link3 = makeLinksInMemory();
-    const link4 = makeLinksInMemory();
-    const link5 = makeLinksInMemory();
+    const link1 = makeLinksInMemory({
+      id: 1
+    });
+    const link2 = makeLinksInMemory({
+      id: 2
+    });
+    const link3 = makeLinksInMemory({
+      id: 3
+    });
+    const link4 = makeLinksInMemory({
+      id: 4
+    });
+    const link5 = makeLinksInMemory({
+      id: 5
+    });
 
     linksRepository.items = [link1, link2, link3, link4, link5];
 
@@ -47,8 +57,6 @@ describe('Export Links', () => {
       .trim()
       .split('\n')
       .map((row) => row.split(','));
-
-    // console.log(csvAsArray);
 
     expect(csvAsArray).toEqual([
       ['URL original', 'URL curta', 'Quantidade de acessos', 'Criado em'],

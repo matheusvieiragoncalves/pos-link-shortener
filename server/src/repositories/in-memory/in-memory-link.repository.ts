@@ -7,12 +7,15 @@ import type { ICreateLinkInput, ILink } from '@/@types/link';
 import { ResourceNotFoundError } from '@/app/use-cases/errors/resource-not-found.error';
 import { ShortUrlUnavailableError } from '@/app/use-cases/errors/short-url-unavailable.error';
 import { type Either, makeLeft, makeRight } from '@/shared/either';
-import { randomUUID } from 'node:crypto';
 import { Readable } from 'node:stream';
 import type { ILinksRepository } from '../links.repository';
 
 export class InMemoryLinksRepository implements ILinksRepository {
   public items: ILink[] = [];
+
+  createAutoIncrementId(): number {
+    return this.items.length + 1;
+  }
 
   async fetchAllLinks(): Promise<Either<never, IFetchLinksOutput>> {
     return makeRight({
@@ -63,7 +66,7 @@ export class InMemoryLinksRepository implements ILinksRepository {
     const { originalUrl, shortUrl } = data;
 
     const link: ILink = {
-      id: randomUUID(),
+      id: this.items.length + 1,
       originalUrl,
       shortUrl,
       createdAt: new Date(),

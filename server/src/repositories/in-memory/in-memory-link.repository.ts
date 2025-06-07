@@ -4,6 +4,7 @@ import type { IFetchLinksOutput } from '@/@types/fetch-links-output';
 import type { IGetLinkOutput } from '@/@types/get-link-output';
 import type { ICreateLinkInput, ILink } from '@/@types/link';
 
+import { IFetchLinksPaginatedOutput } from '@/@types/fetch-links-output-paginated';
 import { ResourceNotFoundError } from '@/app/use-cases/errors/resource-not-found.error';
 import { ShortUrlUnavailableError } from '@/app/use-cases/errors/short-url-unavailable.error';
 import { type Either, makeLeft, makeRight } from '@/shared/either';
@@ -25,27 +26,32 @@ export class InMemoryLinksRepository implements ILinksRepository {
   }
 
   async fetchLinksPaginated(
-    page = 1,
+    cursor = null,
     pageSize = 20,
-    sortDirection?: 'asc' | 'desc',
-    sortBy?: 'createdAt'
-  ): Promise<Either<never, IFetchLinksOutput>> {
+    sortDirection: 'asc' | 'desc' = 'asc'
+  ): Promise<Either<never, IFetchLinksPaginatedOutput>> {
     const sortedItems = [...this.items].sort((a, b) => {
-      if (sortBy === 'createdAt') {
-        return sortDirection === 'asc'
-          ? a.createdAt.getTime() - b.createdAt.getTime()
-          : b.createdAt.getTime() - a.createdAt.getTime();
-      }
-      return 0;
+      return sortDirection === 'asc' ? a.id - b.id : b.id - a.id;
     });
 
-    const startIndex = (page - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
+    const filteredItems = sortedItems.filter((item) => {
+      if (!cursor) return true;
 
-    const links = sortedItems.slice(startIndex, endIndex);
-    const totalCount = sortedItems.length;
+      if (sortDirection === 'asc') return item.id > cursor;
+      else return item.id < cursor;
+    });
 
-    return makeRight({ links, totalCount });
+    const links = filteredItems.slice(0, pageSize);
+
+    let nextCursor = null;
+
+    if (links?.length === pageSize && links[links.length - 1]?.id) {
+      nextCursor = links[links.length - 1].id;
+    }
+
+    const totalCount = this.items.length;
+
+    return makeRight({ links, totalCount, nextCursor });
   }
 
   async findByShortUrl(

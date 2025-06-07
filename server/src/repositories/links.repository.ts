@@ -1,5 +1,6 @@
 import type { ICreateLinkOutput } from '@/@types/create-link-output';
 import type { IFetchLinksOutput } from '@/@types/fetch-links-output';
+import { IFetchLinksPaginatedOutput } from '@/@types/fetch-links-output-paginated';
 import type { IGetLinkOutput } from '@/@types/get-link-output';
 import type { ICreateLinkInput } from '@/@types/link';
 
@@ -14,11 +15,10 @@ export interface ILinksRepository {
   ): Promise<Either<ResourceNotFoundError, IGetLinkOutput>>;
 
   fetchLinksPaginated(
-    page?: number,
+    cursor?: number | null,
     pageSize?: number,
-    sortDirection?: 'asc' | 'desc',
-    sortBy?: 'createdAt'
-  ): Promise<Either<never, IFetchLinksOutput>>;
+    sortDirection?: 'asc' | 'desc'
+  ): Promise<Either<never, IFetchLinksPaginatedOutput>>;
 
   fetchAllLinks(): Promise<Either<never, IFetchLinksOutput>>;
 

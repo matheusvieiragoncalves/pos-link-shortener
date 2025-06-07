@@ -8,6 +8,7 @@ import { ResourceNotFoundError } from '@/app/use-cases/errors/resource-not-found
 import { ShortUrlUnavailableError } from '@/app/use-cases/errors/short-url-unavailable.error';
 import { type Either, makeLeft, makeRight } from '@/shared/either';
 import { randomUUID } from 'node:crypto';
+import { Readable } from 'node:stream';
 import type { ILinksRepository } from '../links.repository';
 
 export class InMemoryLinksRepository implements ILinksRepository {
@@ -107,5 +108,26 @@ export class InMemoryLinksRepository implements ILinksRepository {
     this.items.splice(index, 1);
 
     return makeRight(null);
+  }
+
+  getCursorToCSVExport(): Readable {
+    let dataToExport = [...this.items];
+
+    let index = 0;
+    const batchSize = 2;
+
+    return new Readable({
+      objectMode: true,
+      read() {
+        const chunk = dataToExport.slice(index, index + batchSize);
+        index += batchSize;
+
+        if (chunk.length === 0) {
+          this.push(null);
+        } else {
+          this.push(chunk);
+        }
+      }
+    });
   }
 }

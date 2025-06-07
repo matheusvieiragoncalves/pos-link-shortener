@@ -6,6 +6,7 @@ import type { ICreateLinkInput } from '@/@types/link';
 import type { ResourceNotFoundError } from '@/app/use-cases/errors/resource-not-found.error';
 import { ShortUrlUnavailableError } from '@/app/use-cases/errors/short-url-unavailable.error';
 import type { Either } from '@/shared/either';
+import { Readable } from 'node:stream';
 
 export interface ILinksRepository {
   findByShortUrl(
@@ -32,4 +33,6 @@ export interface ILinksRepository {
   deleteByShortUrl(
     shortUrl: string
   ): Promise<Either<ResourceNotFoundError, null>>;
+
+  getCursorToCSVExport(): Readable;
 }

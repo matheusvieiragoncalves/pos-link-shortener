@@ -4,7 +4,7 @@ import { IFetchLinksPaginatedOutput } from '@/@types/fetch-links-output-paginate
 import { ICreateLinkInput, ILink } from '@/@types/link';
 import { db } from '@/infra/db';
 import { schema } from '@/infra/db/schemas';
-import { gt, ilike, lt } from 'drizzle-orm';
+import { eq, gt, ilike, lt, sql } from 'drizzle-orm';
 import { Readable } from 'stream';
 import type { ILinksRepository } from '../links.repository';
 
@@ -83,8 +83,19 @@ export class DrizzleLinksRepository implements ILinksRepository {
     return link;
   }
 
-  incrementLinkAccessCountByShortUrl(shortUrl: string): Promise<ILink> {
-    throw new Error('Method not implemented.');
+  async incrementLinkAccessCountByShortUrl(
+    shortUrl: string
+  ): Promise<ILink | null> {
+    await db
+      .update(schema.links)
+      .set({ accessCount: sql`${schema.links.accessCount} + 1` })
+      .where(eq(schema.links.shortUrl, shortUrl));
+
+    const link = await db.query.links.findFirst({
+      where: eq(schema.links.shortUrl, shortUrl)
+    });
+
+    return link ?? null;
   }
 
   async deleteByShortUrl(shortUrl: string): Promise<null> {

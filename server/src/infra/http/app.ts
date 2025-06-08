@@ -10,6 +10,7 @@ import { createLinksRoute } from './routes/create-links';
 import { deleteLinkByShortUrlRoute } from './routes/delete-link-by-short-url';
 import { fetchAllLinksRoute } from './routes/fetch-all-links';
 import { fetchLinksPaginatedRoute } from './routes/fetch-paginated-links';
+import { getLinkByShortUrlAndRedirectRoute } from './routes/get-link-by-short-url-and-redirect';
 
 const app = fastify();
 
@@ -36,5 +37,6 @@ app.register(createLinksRoute);
 app.register(fetchAllLinksRoute);
 app.register(fetchLinksPaginatedRoute);
 app.register(deleteLinkByShortUrlRoute);
+app.register(getLinkByShortUrlAndRedirectRoute);
 
 export { app };

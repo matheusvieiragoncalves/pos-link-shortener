@@ -1,11 +1,11 @@
 import { CreateLinkUseCase } from '@/app/use-cases/create-links';
-import { InMemoryLinksRepository } from '@/repositories/in-memory/in-memory-link.repository';
+import { DrizzleLinksRepository } from '@/repositories/drizzle/drizzle-link.repository';
 import { isLeft, unwrapEither } from '@/shared/either';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
 
 export const createLinksRoute: FastifyPluginAsyncZod = async (app) => {
-  const linksRepository = new InMemoryLinksRepository();
+  const linksRepository = new DrizzleLinksRepository();
   const createLinkUseCase = new CreateLinkUseCase(linksRepository);
 
   app.post(
@@ -19,10 +19,11 @@ export const createLinksRoute: FastifyPluginAsyncZod = async (app) => {
         response: {
           200: z.object({
             link: z.object({
-              id: z.string(),
+              id: z.number(),
               originalUrl: z.string().url(),
               shortUrl: z.string(),
-              createdAt: z.date()
+              accessCount: z.number(),
+              createdAt: z.date().nullable()
             })
           }),
           400: z.object({

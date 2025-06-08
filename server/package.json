@@ -9,7 +9,11 @@
     "test": "vitest run --project unit",
     "test:e2e": "vitest run --project e2e",
     "test:watch": "vitest --project unit",
-    "test:e2e:watch": "vitest --project e2e"
+    "test:e2e:watch": "vitest --project e2e",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
+    "db:migrate:test": "dotenv -e .env.test drizzle-kit migrate"
   },
   "keywords": [],
   "author": "",
@@ -18,8 +22,10 @@
     "@fastify/cors": "11.0.1",
     "csv-stringify": "6.5.2",
     "dayjs": "1.11.13",
+    "drizzle-orm": "0.44.2",
     "fastify": "5.3.3",
     "fastify-type-provider-zod": "4.0.2",
+    "postgres": "3.4.7",
     "zod": "3.25.50"
   },
   "devDependencies": {
@@ -27,6 +33,7 @@
     "@faker-js/faker": "9.8.0",
     "@types/node": "22.15.29",
     "@types/supertest": "6.0.3",
+    "drizzle-kit": "0.31.1",
     "supertest": "7.1.1",
     "tsx": "4.19.4",
     "typescript": "5.8.3",

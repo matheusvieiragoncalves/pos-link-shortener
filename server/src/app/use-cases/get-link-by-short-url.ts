@@ -1,8 +1,8 @@
 import type { IGetLinkOutput } from '@/@types/get-link-output';
 import type { ILinksRepository } from '@/repositories/links.repository';
-import { type Either, isLeft, makeRight, unwrapEither } from '@/shared/either';
+import { type Either, makeLeft, makeRight } from '@/shared/either';
 import { z } from 'zod';
-import type { ResourceNotFoundError } from './errors/resource-not-found.error';
+import { ResourceNotFoundError } from './errors/resource-not-found.error';
 
 const getLinkByShortUrlSchema = z.object({
   shortUrl: z.string()
@@ -18,23 +18,21 @@ export class GetLinkByShortUrlUseCase {
   ): Promise<Either<ResourceNotFoundError, IGetLinkOutput>> {
     const { shortUrl } = getLinkByShortUrlSchema.parse(data);
 
-    const result = await this.linksRepository.findByShortUrl(shortUrl);
+    const link = await this.linksRepository.findByShortUrl(shortUrl);
 
-    if (isLeft(result)) {
-      return result;
+    if (!link) {
+      return makeLeft(new ResourceNotFoundError());
     }
-
-    const { link } = unwrapEither(result);
 
     const incrementResult =
       await this.linksRepository.incrementLinkAccessCountByShortUrl(
         link.shortUrl
       );
 
-    if (isLeft(incrementResult)) {
-      return incrementResult;
+    if (!incrementResult) {
+      return makeLeft(new ResourceNotFoundError());
     }
 
-    return makeRight({ link: { ...link, accessCount: link.accessCount + 1 } });
+    return makeRight({ link: { ...link, accessCount: link.accessCount } });
   }
 }

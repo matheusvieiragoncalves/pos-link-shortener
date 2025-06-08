@@ -1,19 +1,15 @@
 import type { IFetchLinksOutput } from '@/@types/fetch-links-output';
 
-import { ICreateLinkOutput } from '@/@types/create-link-output';
 import { IFetchLinksPaginatedOutput } from '@/@types/fetch-links-output-paginated';
-import { IGetLinkOutput } from '@/@types/get-link-output';
-import { ICreateLinkInput } from '@/@types/link';
-import { ResourceNotFoundError } from '@/app/use-cases/errors/resource-not-found.error';
+import { ICreateLinkInput, ILink } from '@/@types/link';
 import { db } from '@/infra/db';
 import { schema } from '@/infra/db/schemas';
-import { type Either, makeLeft, makeRight } from '@/shared/either';
 import { gt, ilike, lt } from 'drizzle-orm';
 import { Readable } from 'stream';
 import type { ILinksRepository } from '../links.repository';
 
 export class DrizzleLinksRepository implements ILinksRepository {
-  async fetchAllLinks(): Promise<Either<never, IFetchLinksOutput>> {
+  async fetchAllLinks(): Promise<IFetchLinksOutput> {
     const links = await db
       .select({
         id: schema.links.id,
@@ -24,12 +20,10 @@ export class DrizzleLinksRepository implements ILinksRepository {
       })
       .from(schema.links);
 
-    return makeRight({ links, totalCount: links.length });
+    return { links, totalCount: links.length };
   }
 
-  async findByShortUrl(
-    shortUrl: string
-  ): Promise<Either<ResourceNotFoundError, IGetLinkOutput>> {
+  async findByShortUrl(shortUrl: string): Promise<ILink | null> {
     const result = await db
       .select({
         id: schema.links.id,
@@ -44,18 +38,14 @@ export class DrizzleLinksRepository implements ILinksRepository {
 
     const link = result[0] ?? null;
 
-    if (!link) {
-      return makeLeft(new ResourceNotFoundError());
-    }
-
-    return makeRight({ link });
+    return link;
   }
 
   async fetchLinksPaginated(
     cursor?: number | null,
     pageSize: number = 20,
     sortDirection: 'asc' | 'desc' = 'desc'
-  ): Promise<Either<never, IFetchLinksPaginatedOutput>> {
+  ): Promise<IFetchLinksPaginatedOutput> {
     const links = await db
       .select()
       .from(schema.links)
@@ -71,15 +61,13 @@ export class DrizzleLinksRepository implements ILinksRepository {
 
     const nextCursor = links.length > 0 ? links[links.length - 1].id : null;
 
-    return makeRight({
+    return {
       links,
       nextCursor
-    });
+    };
   }
 
-  async create(
-    data: ICreateLinkInput
-  ): Promise<Either<never, ICreateLinkOutput>> {
+  async create(data: ICreateLinkInput): Promise<ILink> {
     const { originalUrl, shortUrl } = data;
 
     const result = await db
@@ -92,19 +80,17 @@ export class DrizzleLinksRepository implements ILinksRepository {
 
     const link = result[0] ?? null;
 
-    return makeRight({ link });
+    return link;
   }
 
-  incrementLinkAccessCountByShortUrl(
-    shortUrl: string
-  ): Promise<Either<ResourceNotFoundError, null>> {
+  incrementLinkAccessCountByShortUrl(shortUrl: string): Promise<ILink> {
     throw new Error('Method not implemented.');
   }
 
-  async deleteByShortUrl(shortUrl: string): Promise<Either<never, null>> {
+  async deleteByShortUrl(shortUrl: string): Promise<null> {
     await db.delete(schema.links).where(ilike(schema.links.shortUrl, shortUrl));
 
-    return makeRight(null);
+    return null;
   }
 
   getCursorToCSVExport(): Readable {

@@ -1,7 +1,7 @@
 import type { ICreateLinkOutput } from '@/@types/create-link-output';
 import type { ILinksRepository } from '@/repositories/links.repository';
 import type { Either } from '@/shared/either';
-import { isLeft, isRight, makeLeft } from '@/shared/either';
+import { makeLeft, makeRight } from '@/shared/either';
 import { z } from 'zod';
 import { ShortUrlUnavailableError } from './errors/short-url-unavailable.error';
 
@@ -22,19 +22,15 @@ export class CreateLinkUseCase {
 
     const existingLink = await this.linksRepository.findByShortUrl(shortUrl);
 
-    if (isRight(existingLink)) {
+    if (existingLink) {
       return makeLeft(new ShortUrlUnavailableError());
     }
 
-    const result = await this.linksRepository.create({
+    const link = await this.linksRepository.create({
       shortUrl,
       originalUrl
     });
 
-    if (isLeft(result)) {
-      return result;
-    }
-
-    return result;
+    return makeRight({ link });
   }
 }

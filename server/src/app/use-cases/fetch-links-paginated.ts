@@ -1,6 +1,6 @@
 import { IFetchLinksPaginatedOutput } from '@/@types/fetch-links-output-paginated';
 import type { ILinksRepository } from '@/repositories/links.repository';
-import type { Either } from '@/shared/either';
+import { makeRight, type Either } from '@/shared/either';
 import { z } from 'zod';
 
 const fetchLinksPaginatedSchema = z.object({
@@ -26,6 +26,6 @@ export class FetchLinksPaginatedUseCase {
       sortDirection
     );
 
-    return results;
+    return makeRight(results);
   }
 }

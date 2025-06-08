@@ -1,38 +1,25 @@
-import type { ICreateLinkOutput } from '@/@types/create-link-output';
 import type { IFetchLinksOutput } from '@/@types/fetch-links-output';
 import { IFetchLinksPaginatedOutput } from '@/@types/fetch-links-output-paginated';
-import type { IGetLinkOutput } from '@/@types/get-link-output';
-import type { ICreateLinkInput } from '@/@types/link';
+import type { ICreateLinkInput, ILink } from '@/@types/link';
 
-import type { ResourceNotFoundError } from '@/app/use-cases/errors/resource-not-found.error';
-import { ShortUrlUnavailableError } from '@/app/use-cases/errors/short-url-unavailable.error';
-import type { Either } from '@/shared/either';
 import { Readable } from 'node:stream';
 
 export interface ILinksRepository {
-  findByShortUrl(
-    shortUrl: string
-  ): Promise<Either<ResourceNotFoundError, IGetLinkOutput>>;
+  findByShortUrl(shortUrl: string): Promise<ILink | null>;
 
   fetchLinksPaginated(
     cursor?: number | null,
     pageSize?: number,
     sortDirection?: 'asc' | 'desc'
-  ): Promise<Either<never, IFetchLinksPaginatedOutput>>;
+  ): Promise<IFetchLinksPaginatedOutput>;
 
-  fetchAllLinks(): Promise<Either<never, IFetchLinksOutput>>;
+  fetchAllLinks(): Promise<IFetchLinksOutput>;
 
-  create(
-    data: ICreateLinkInput
-  ): Promise<Either<ShortUrlUnavailableError, ICreateLinkOutput>>;
+  create(data: ICreateLinkInput): Promise<ILink>;
 
-  incrementLinkAccessCountByShortUrl(
-    shortUrl: string
-  ): Promise<Either<ResourceNotFoundError, null>>;
+  incrementLinkAccessCountByShortUrl(shortUrl: string): Promise<ILink | null>;
 
-  deleteByShortUrl(
-    shortUrl: string
-  ): Promise<Either<ResourceNotFoundError, null>>;
+  deleteByShortUrl(shortUrl: string): Promise<null>;
 
   getCursorToCSVExport(): Readable;
 }

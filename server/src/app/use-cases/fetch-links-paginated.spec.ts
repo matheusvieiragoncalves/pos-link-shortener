@@ -8,7 +8,7 @@ import { FetchLinksPaginatedUseCase } from './fetch-links-paginated';
 let linksRepository: InMemoryLinksRepository;
 let sut: FetchLinksPaginatedUseCase;
 
-describe('Create Links Use Case', () => {
+describe('Fetch Links Paginated Use Case', () => {
   beforeEach(() => {
     linksRepository = new InMemoryLinksRepository();
     sut = new FetchLinksPaginatedUseCase(linksRepository);
@@ -108,8 +108,7 @@ describe('Create Links Use Case', () => {
 
     expect(unwrapEither(page5)).toEqual({
       links: expect.any(Array),
-      nextCursor: expect.any(Number),
-      totalCount: expect.any(Number)
+      nextCursor: expect.any(Number)
     });
   });
 

@@ -1,13 +1,7 @@
-import type { ICreateLinkOutput } from '@/@types/create-link-output';
-
 import type { IFetchLinksOutput } from '@/@types/fetch-links-output';
-import type { IGetLinkOutput } from '@/@types/get-link-output';
 import type { ICreateLinkInput, ILink } from '@/@types/link';
 
 import { IFetchLinksPaginatedOutput } from '@/@types/fetch-links-output-paginated';
-import { ResourceNotFoundError } from '@/app/use-cases/errors/resource-not-found.error';
-import { ShortUrlUnavailableError } from '@/app/use-cases/errors/short-url-unavailable.error';
-import { type Either, makeLeft, makeRight } from '@/shared/either';
 import { Readable } from 'node:stream';
 import type { ILinksRepository } from '../links.repository';
 
@@ -18,18 +12,18 @@ export class InMemoryLinksRepository implements ILinksRepository {
     return this.items.length + 1;
   }
 
-  async fetchAllLinks(): Promise<Either<never, IFetchLinksOutput>> {
-    return makeRight({
+  async fetchAllLinks(): Promise<IFetchLinksOutput> {
+    return {
       links: this.items,
       totalCount: this.items.length
-    });
+    };
   }
 
   async fetchLinksPaginated(
     cursor = null,
     pageSize = 20,
     sortDirection: 'asc' | 'desc' = 'asc'
-  ): Promise<Either<never, IFetchLinksPaginatedOutput>> {
+  ): Promise<IFetchLinksPaginatedOutput> {
     const sortedItems = [...this.items].sort((a, b) => {
       return sortDirection === 'asc' ? a.id - b.id : b.id - a.id;
     });
@@ -49,26 +43,15 @@ export class InMemoryLinksRepository implements ILinksRepository {
       nextCursor = links[links.length - 1].id;
     }
 
-    const totalCount = this.items.length;
-
-    return makeRight({ links, totalCount, nextCursor });
+    return { links, nextCursor };
   }
 
-  async findByShortUrl(
-    shortUrl: string
-  ): Promise<Either<ResourceNotFoundError, IGetLinkOutput>> {
-    const link = this.items.find((item) => item.shortUrl === shortUrl);
-
-    if (!link) {
-      return makeLeft(new ResourceNotFoundError());
-    }
-
-    return makeRight({ link: { ...link } });
+  async findByShortUrl(shortUrl: string): Promise<ILink | null> {
+    const link = this.items.find((item) => item.shortUrl === shortUrl) ?? null;
+    return link;
   }
 
-  async create(
-    data: ICreateLinkInput
-  ): Promise<Either<Error, ICreateLinkOutput>> {
+  async create(data: ICreateLinkInput): Promise<ILink> {
     const { originalUrl, shortUrl } = data;
 
     const link: ILink = {
@@ -79,44 +62,31 @@ export class InMemoryLinksRepository implements ILinksRepository {
       accessCount: 0
     };
 
-    const urlAlredyExists = this.items.some(
-      (item) => item.shortUrl === shortUrl
-    );
-
-    // Check if the short URL already exists in the repository - simulating a database unique constraint
-    if (urlAlredyExists) {
-      return makeLeft(new ShortUrlUnavailableError());
-    }
-
     this.items.push(link);
 
-    return makeRight({ link });
+    return link;
   }
 
   async incrementLinkAccessCountByShortUrl(
     shortUrl: string
-  ): Promise<Either<ResourceNotFoundError, null>> {
-    const link = this.items.find((item) => item.shortUrl === shortUrl);
+  ): Promise<ILink | null> {
+    const link = this.items.find((item) => item.shortUrl === shortUrl) ?? null;
 
-    if (!link) {
-      return makeLeft(new ResourceNotFoundError());
-    }
+    if (!link) return null;
 
     link.accessCount += 1;
 
-    return makeRight(null);
+    return link;
   }
 
-  async deleteByShortUrl(
-    shortUrl: string
-  ): Promise<Either<ResourceNotFoundError, null>> {
+  async deleteByShortUrl(shortUrl: string): Promise<null> {
     const index = this.items.findIndex((i) => i.shortUrl === shortUrl);
 
-    if (index < 0) return makeLeft(new ResourceNotFoundError());
+    if (index < 0) return null;
 
     this.items.splice(index, 1);
 
-    return makeRight(null);
+    return null;
   }
 
   getCursorToCSVExport(): Readable {

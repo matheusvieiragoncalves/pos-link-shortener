@@ -1,7 +1,6 @@
 import type { ILink } from '@/@types/link';
 import { InMemoryLinksRepository } from '@/repositories/in-memory/in-memory-link.repository';
 import { isRight, unwrapEither } from '@/shared/either';
-import { randomUUID } from 'node:crypto';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { CreateLinkUseCase } from './create-links';
 import { ShortUrlUnavailableError } from './errors/short-url-unavailable.error';
@@ -30,7 +29,7 @@ describe('Create Links Use Case', () => {
     const sameShortUrl = 'example-2';
 
     linksRepository.items.push({
-      id: randomUUID(),
+      id: 1,
       shortUrl: sameShortUrl,
       originalUrl: 'https://original-example.com',
       createdAt: new Date(),

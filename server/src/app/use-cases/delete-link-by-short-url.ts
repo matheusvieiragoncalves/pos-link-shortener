@@ -1,5 +1,5 @@
 import type { ILinksRepository } from '@/repositories/links.repository';
-import { type Either } from '@/shared/either';
+import { isLeft, type Either } from '@/shared/either';
 import { z } from 'zod';
 import { ResourceNotFoundError } from './errors/resource-not-found.error';
 
@@ -16,6 +16,12 @@ export class DeleteLinkByShortUrlUseCase {
     data: IDeleteLinkByShortUrlInput
   ): Promise<Either<ResourceNotFoundError, null>> {
     const { shortUrl } = deleteLinkByShortUrlSchema.parse(data);
+
+    const linkExisting = await this.linksRepository.findByShortUrl(shortUrl);
+
+    if (isLeft(linkExisting)) {
+      return linkExisting;
+    }
 
     const result = await this.linksRepository.deleteByShortUrl(shortUrl);
 

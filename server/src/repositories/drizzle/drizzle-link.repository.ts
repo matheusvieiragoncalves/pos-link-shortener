@@ -8,7 +8,7 @@ import { ResourceNotFoundError } from '@/app/use-cases/errors/resource-not-found
 import { db } from '@/infra/db';
 import { schema } from '@/infra/db/schemas';
 import { type Either, makeLeft, makeRight } from '@/shared/either';
-import { ilike } from 'drizzle-orm';
+import { gt, ilike, lt } from 'drizzle-orm';
 import { Readable } from 'stream';
 import type { ILinksRepository } from '../links.repository';
 
@@ -44,17 +44,37 @@ export class DrizzleLinksRepository implements ILinksRepository {
 
     const link = result[0] ?? null;
 
-    if (!link) return makeLeft(new ResourceNotFoundError());
+    if (!link) {
+      return makeLeft(new ResourceNotFoundError());
+    }
 
     return makeRight({ link });
   }
 
-  fetchLinksPaginated(
+  async fetchLinksPaginated(
     cursor?: number | null,
-    pageSize?: number,
-    sortDirection?: 'asc' | 'desc'
+    pageSize: number = 20,
+    sortDirection: 'asc' | 'desc' = 'desc'
   ): Promise<Either<never, IFetchLinksPaginatedOutput>> {
-    throw new Error('Method not implemented.');
+    const links = await db
+      .select()
+      .from(schema.links)
+      .where(
+        cursor
+          ? sortDirection === 'desc'
+            ? lt(schema.links.id, cursor)
+            : gt(schema.links.id, cursor)
+          : undefined
+      )
+      .orderBy(schema.links.id)
+      .limit(pageSize);
+
+    const nextCursor = links.length > 0 ? links[links.length - 1].id : null;
+
+    return makeRight({
+      links,
+      nextCursor
+    });
   }
 
   async create(
@@ -81,8 +101,10 @@ export class DrizzleLinksRepository implements ILinksRepository {
     throw new Error('Method not implemented.');
   }
 
-  deleteByShortUrl(shortUrl: string): Promise<Either<never, null>> {
-    throw new Error('Method not implemented.');
+  async deleteByShortUrl(shortUrl: string): Promise<Either<never, null>> {
+    await db.delete(schema.links).where(ilike(schema.links.shortUrl, shortUrl));
+
+    return makeRight(null);
   }
 
   getCursorToCSVExport(): Readable {

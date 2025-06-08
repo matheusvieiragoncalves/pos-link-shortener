@@ -41,9 +41,8 @@ describe('Create Links Use Case', () => {
       sortDirection
     });
 
-    const { totalCount, links } = unwrapEither(result);
+    const { links } = unwrapEither(result);
 
-    expect(totalCount).toBe(AMOUNT_LINKS_TO_TEST);
     expect(links).toHaveLength(pageSize);
   });
 

@@ -7,7 +7,9 @@ import {
   validatorCompiler
 } from 'fastify-type-provider-zod';
 import { createLinksRoute } from './routes/create-links';
+import { deleteLinkByShortUrlRoute } from './routes/delete-link-by-short-url';
 import { fetchAllLinksRoute } from './routes/fetch-all-links';
+import { fetchLinksPaginatedRoute } from './routes/fetch-paginated-links';
 
 const app = fastify();
 
@@ -32,5 +34,7 @@ app.setErrorHandler((error, _, reply) => {
 
 app.register(createLinksRoute);
 app.register(fetchAllLinksRoute);
+app.register(fetchLinksPaginatedRoute);
+app.register(deleteLinkByShortUrlRoute);
 
 export { app };

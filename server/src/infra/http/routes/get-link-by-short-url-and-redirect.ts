@@ -20,7 +20,7 @@ export const getLinkByShortUrlAndRedirectRoute: FastifyPluginAsyncZod = async (
           shortUrl: z.string()
         }),
         response: {
-          200: z.null(),
+          302: z.null(),
           404: z.object({
             message: z.string()
           })

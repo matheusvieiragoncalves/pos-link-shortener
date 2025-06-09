@@ -4,7 +4,7 @@ import { IFetchLinksPaginatedOutput } from '@/@types/fetch-links-output-paginate
 import { ICreateLinkInput, ILink } from '@/@types/link';
 import { db } from '@/infra/db';
 import { schema } from '@/infra/db/schemas';
-import { eq, gt, ilike, lt, sql } from 'drizzle-orm';
+import { asc, desc, eq, gt, ilike, lt, sql } from 'drizzle-orm';
 import { Readable } from 'stream';
 import type { ILinksRepository } from '../links.repository';
 
@@ -56,10 +56,14 @@ export class DrizzleLinksRepository implements ILinksRepository {
             : gt(schema.links.id, cursor)
           : undefined
       )
-      .orderBy(schema.links.id)
+      .orderBy(
+        sortDirection === 'desc' ? desc(schema.links.id) : asc(schema.links.id)
+      )
+
       .limit(pageSize);
 
-    const nextCursor = links.length > 0 ? links[links.length - 1].id : null;
+    const nextCursor =
+      links.length === pageSize ? links[links.length - 1].id : null;
 
     return {
       links,
@@ -100,7 +104,6 @@ export class DrizzleLinksRepository implements ILinksRepository {
 
   async deleteByShortUrl(shortUrl: string): Promise<null> {
     await db.delete(schema.links).where(ilike(schema.links.shortUrl, shortUrl));
-
     return null;
   }
 

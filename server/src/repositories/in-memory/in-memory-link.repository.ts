@@ -90,7 +90,12 @@ export class InMemoryLinksRepository implements ILinksRepository {
   }
 
   getCursorToCSVExport(): Readable {
-    let dataToExport = [...this.items];
+    let dataToExport = this.items.map((item) => ({
+      short_url: item.shortUrl,
+      original_url: item.originalUrl,
+      access_count: item.accessCount,
+      created_at: item.createdAt
+    }));
 
     let index = 0;
     const batchSize = 2;

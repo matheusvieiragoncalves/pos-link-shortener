@@ -2,10 +2,9 @@ import type { IFetchLinksOutput } from '@/@types/fetch-links-output';
 
 import { IFetchLinksPaginatedOutput } from '@/@types/fetch-links-output-paginated';
 import { ICreateLinkInput, ILink } from '@/@types/link';
-import { db } from '@/infra/db';
+import { db, pg } from '@/infra/db';
 import { schema } from '@/infra/db/schemas';
 import { asc, desc, eq, gt, ilike, lt, sql } from 'drizzle-orm';
-import { Readable } from 'stream';
 import type { ILinksRepository } from '../links.repository';
 
 export class DrizzleLinksRepository implements ILinksRepository {
@@ -107,7 +106,20 @@ export class DrizzleLinksRepository implements ILinksRepository {
     return null;
   }
 
-  getCursorToCSVExport(): Readable {
-    throw new Error('Method not implemented.');
+  async getCursorToCSVExport() {
+    const { sql, params } = db
+      .select({
+        id: schema.links.id,
+        originalUrl: schema.links.originalUrl,
+        shortUrl: schema.links.shortUrl,
+        accessCount: schema.links.accessCount,
+        createdAt: schema.links.createdAt
+      })
+      .from(schema.links)
+      .toSQL();
+
+    const cursor = pg.unsafe(sql, params as string[]).cursor(10);
+
+    return cursor;
   }
 }

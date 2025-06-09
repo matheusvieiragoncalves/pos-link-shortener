@@ -8,6 +8,7 @@ import {
 } from 'fastify-type-provider-zod';
 import { createLinksRoute } from './routes/create-links';
 import { deleteLinkByShortUrlRoute } from './routes/delete-link-by-short-url';
+import { ExportLinksRoute } from './routes/export-report';
 import { fetchAllLinksRoute } from './routes/fetch-all-links';
 import { fetchLinksPaginatedRoute } from './routes/fetch-paginated-links';
 import { getLinkByShortUrlAndRedirectRoute } from './routes/get-link-by-short-url-and-redirect';
@@ -38,5 +39,6 @@ app.register(fetchAllLinksRoute);
 app.register(fetchLinksPaginatedRoute);
 app.register(deleteLinkByShortUrlRoute);
 app.register(getLinkByShortUrlAndRedirectRoute);
+app.register(ExportLinksRoute);
 
 export { app };

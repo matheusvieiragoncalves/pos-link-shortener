@@ -3,7 +3,12 @@ import { z } from 'zod';
 const envSchema = z.object({
   PORT: z.coerce.number().default(3333),
   NODE_ENV: z.enum(['dev', 'test', 'production']).default('dev'),
-  DATABASE_URL: z.string().url().startsWith('postgresql://')
+  DATABASE_URL: z.string().url().startsWith('postgresql://'),
+  CLOUDFLARE_ACCOUNT_ID: z.string(),
+  CLOUDFLARE_ACCESS_KEY_ID: z.string(),
+  CLOUDFLARE_ACCESS_SECRET_KEY: z.string(),
+  CLOUDFLARE_BUCKET_NAME: z.string(),
+  CLOUDFLARE_BUCKET_PUBLIC_URL: z.string().url()
 });
 
 const checkEnvSchema = envSchema.safeParse(process.env);

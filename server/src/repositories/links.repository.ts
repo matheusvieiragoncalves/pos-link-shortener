@@ -2,8 +2,6 @@ import type { IFetchLinksOutput } from '@/@types/fetch-links-output';
 import { IFetchLinksPaginatedOutput } from '@/@types/fetch-links-output-paginated';
 import type { ICreateLinkInput, ILink } from '@/@types/link';
 
-import { Readable } from 'node:stream';
-
 export interface ILinksRepository {
   findByShortUrl(shortUrl: string): Promise<ILink | null>;
 
@@ -21,5 +19,5 @@ export interface ILinksRepository {
 
   deleteByShortUrl(shortUrl: string): Promise<null>;
 
-  getCursorToCSVExport(): Readable;
+  getCursorToCSVExport(): any;
 }

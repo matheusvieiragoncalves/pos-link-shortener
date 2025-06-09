@@ -1,7 +1,9 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import * as upload from '@/infra/storage/upload-file-to-storage';
 import { InMemoryLinksRepository } from '@/repositories/in-memory/in-memory-link.repository';
 import { unwrapEither } from '@/shared/either';
+import { randomUUID } from 'crypto';
 import { makeLinksInMemory } from 'test/factories/make-links-in-memory';
 import { ExportLinksUseCase } from './export-csv';
 
@@ -15,6 +17,15 @@ describe('Export Links', () => {
   });
 
   it('should be able to export links', async () => {
+    const uploadStub = vi
+      .spyOn(upload, 'uploadFileToStorage')
+      .mockImplementationOnce(async () => {
+        return {
+          key: `${randomUUID()}.csv`,
+          url: 'http://example.com/file.csv'
+        };
+      });
+
     const link1 = makeLinksInMemory({
       id: 1
     });
@@ -35,7 +46,7 @@ describe('Export Links', () => {
 
     const result = await sut.execute();
 
-    const { generatedCSVStream } = unwrapEither(result);
+    const generatedCSVStream = uploadStub.mock.calls[0][0].contentStream;
 
     const csvAsString = await new Promise<string>((resolve, reject) => {
       const chunks: Buffer[] = [];
@@ -59,37 +70,41 @@ describe('Export Links', () => {
       .map((row) => row.split(','));
 
     expect(csvAsArray).toEqual([
-      ['URL original', 'URL curta', 'Quantidade de acessos', 'Criado em'],
+      ['URL curta', 'URL original', 'Quantidade de acessos', 'Criado em'],
       [
-        link1.originalUrl,
         link1.shortUrl,
+        link1.originalUrl,
         link1.accessCount.toString(),
         expect.any(String)
       ],
       [
-        link2.originalUrl,
         link2.shortUrl,
+        link2.originalUrl,
         link2.accessCount.toString(),
         expect.any(String)
       ],
       [
-        link3.originalUrl,
         link3.shortUrl,
+        link3.originalUrl,
         link3.accessCount.toString(),
         expect.any(String)
       ],
       [
-        link4.originalUrl,
         link4.shortUrl,
+        link4.originalUrl,
         link4.accessCount.toString(),
         expect.any(String)
       ],
       [
-        link5.originalUrl,
         link5.shortUrl,
+        link5.originalUrl,
         link5.accessCount.toString(),
         expect.any(String)
       ]
     ]);
+
+    expect(unwrapEither(result)).toEqual({
+      url: 'http://example.com/file.csv'
+    });
   });
 });

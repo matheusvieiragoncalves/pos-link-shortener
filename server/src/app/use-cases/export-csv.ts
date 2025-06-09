@@ -1,3 +1,4 @@
+import { uploadFileToStorage } from '@/infra/storage/upload-file-to-storage';
 import type { ILinksRepository } from '@/repositories/links.repository';
 import { Either, makeRight } from '@/shared/either';
 import { stringify } from 'csv-stringify';
@@ -8,21 +9,21 @@ export class ExportLinksUseCase {
   constructor(private linksRepository: ILinksRepository) {}
 
   async execute(): Promise<Either<never, any>> {
-    const cursor = this.linksRepository.getCursorToCSVExport();
+    const cursor = await this.linksRepository.getCursorToCSVExport();
 
     const csv = stringify({
       header: true,
       columns: [
-        { key: 'originalUrl', header: 'URL original' },
-        { key: 'shortUrl', header: 'URL curta' },
-        { key: 'accessCount', header: 'Quantidade de acessos' },
-        { key: 'createdAt', header: 'Criado em' }
+        { key: 'short_url', header: 'URL curta' },
+        { key: 'original_url', header: 'URL original' },
+        { key: 'access_count', header: 'Quantidade de acessos' },
+        { key: 'created_at', header: 'Criado em' }
       ]
     });
 
     const stream = new PassThrough();
 
-    await pipeline(
+    const convertToCSVPipeline = await pipeline(
       cursor,
       new Transform({
         objectMode: true,
@@ -37,6 +38,18 @@ export class ExportLinksUseCase {
       stream
     );
 
-    return makeRight({ generatedCSVStream: stream });
+    const uploadToStorage = uploadFileToStorage({
+      contentType: 'text/csv',
+      folder: 'reports',
+      fileName: `${new Date().toISOString()}-uploads.csv`,
+      contentStream: stream
+    });
+
+    const [{ url }] = await Promise.all([
+      uploadToStorage,
+      convertToCSVPipeline
+    ]);
+
+    return makeRight({ url });
   }
 }

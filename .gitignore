@@ -8,4 +8,5 @@ web/dist
 
 # Envs
 server/.env
+server/.env.test-aa
 web/.env

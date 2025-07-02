@@ -23,6 +23,6 @@
   - [x]  O CSV deve ter campos como, URL original, URL encurtada, contagem de acessos e data de criação;
   - [x] Obrigatório o uso de TypeScript;
   - [x] Obrigatório o uso de Fastify;
-  - [ ] Obrigatório o uso de Drizzle;
-  - [ ] Obrigatório o uso de Postgres.
+  - [x] Obrigatório o uso de Drizzle;
+  - [x] Obrigatório o uso de Postgres.
     

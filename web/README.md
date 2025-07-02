@@ -23,9 +23,9 @@
 
 ## RNF (Requisitos não funcionais)
 
-  - [ ]  É obrigatória a criação de uma aplicação React no formato SPA utilizando o Vite como `bundler`;
+  - [X]  É obrigatória a criação de uma aplicação React no formato SPA utilizando o Vite como `bundler`;
   - [ ]  Trabalhe com elementos que tragam uma boa experiência ao usuário (`empty state`, ícones de carregamento, bloqueio de ações a depender do estado da aplicação);
   - [ ]  Foco na responsividade: essa aplicação deve ter um bom uso tanto em desktops quanto em celulares;
-  - [ ]  Obrigatório o uso de Typescript;
-  - [ ]  Obrigatório o uso de React;
-  - [ ]  Obrigatório o uso de Vite sem framework.
+  - [X]  Obrigatório o uso de Typescript;
+  - [X]  Obrigatório o uso de React;
+  - [X]  Obrigatório o uso de Vite sem framework.

@@ -2,7 +2,7 @@ import type { ComponentProps } from "react";
 import { tv, type VariantProps } from "tailwind-variants";
 
 const buttonVariants = tv({
-  base: "cursor-pointer w-full max-w-[352px] text-md disabled:opacity-50",
+  base: "cursor-pointer w-full text-md disabled:opacity-50",
 
   variants: {
     theme: {

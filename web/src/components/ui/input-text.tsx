@@ -2,7 +2,7 @@ import { type ComponentProps } from "react";
 import { tv, type VariantProps } from "tailwind-variants";
 
 const inputVariants = tv({
-  base: "placeholder:text-md w-full max-w-[352px] rounded-md border border-gray-300 px-[16px] py-[12px] text-gray-600 outline-none placeholder:text-gray-400",
+  base: "placeholder:text-md w-full rounded-md border border-gray-300 px-[16px] py-[12px] text-gray-600 outline-none placeholder:text-gray-400",
 
   variants: {
     status: {

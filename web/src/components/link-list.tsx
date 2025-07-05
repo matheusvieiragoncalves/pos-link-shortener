@@ -12,7 +12,7 @@ export function LinkList() {
   });
 
   return (
-    <div className="rounded-xl bg-white p-6 pb-3 shadow">
+    <div className="max-h-[100%] w-full overflow-scroll rounded-xl bg-white p-6 pb-3 shadow">
       <div className="mb-4 flex items-center justify-between">
         <h3 className="text-lg font-bold text-gray-900">Meus links</h3>
 

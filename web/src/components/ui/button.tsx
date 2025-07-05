@@ -9,7 +9,7 @@ const buttonVariants = tv({
       primary:
         "text-white bg-blue-base rounded-lg py-[15px] hover:bg-blue-dark",
       secondary:
-        "hover:border-blue-dark  rounded-sm bg-gray-200 p-[8px] font-semibold text-gray-500 hover:border",
+        "hover:border-blue-dark rounded-sm bg-gray-200 p-[8px] font-semibold text-gray-500 hover:border",
     },
   },
 

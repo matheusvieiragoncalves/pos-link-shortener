@@ -8,7 +8,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/:shortLink" element={<RedirectPage />} />
+        <Route path="/:shortUrl" element={<RedirectPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>

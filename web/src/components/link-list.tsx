@@ -1,18 +1,19 @@
 import { CopyIcon } from "@phosphor-icons/react";
-import type { ILink } from "../@types/ILink";
+import { useEffect } from "react";
+import { useLinks } from "../store/links";
 import { LinkItem } from "./link-item";
 import { LinkListEmpty } from "./link-list-empty";
 import { Button } from "./ui/button";
 import { LoadingBar } from "./ui/loading-bar";
 
 export function LinkList() {
-  const links: ILink[] = Array(20).fill({
-    originalLink: "https://www.exemplo.com.br",
-    shortLink: "brev.ly/12345",
-    accessCount: 30,
-  });
+  const links = useLinks((store) => store.links);
+  const isLoading = useLinks((store) => store.isLoading);
+  const fetchLinks = useLinks((store) => store.fetchLinks);
 
-  const isLoading = false;
+  useEffect(() => {
+    fetchLinks();
+  });
 
   return (
     <div className="relative max-h-[100%] w-full overflow-scroll rounded-xl bg-white p-6 pb-3 shadow">
@@ -31,10 +32,12 @@ export function LinkList() {
         </Button>
       </div>
 
-      {!links.length ? (
+      {!links.size ? (
         <LinkListEmpty />
       ) : (
-        links.map((link, index) => <LinkItem key={index} {...link} />)
+        Array.from(links.entries()).map(([id, link]) => (
+          <LinkItem key={id} {...link} />
+        ))
       )}
     </div>
   );

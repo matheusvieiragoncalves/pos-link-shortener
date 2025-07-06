@@ -1,7 +1,40 @@
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import LogoIcon from "../assets/Logo_Icon.svg";
+import { redirectLink } from "../http/redirect-link";
 
 export function RedirectPage() {
+  const { shortUrl } = useParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    async function redirect() {
+      if (!shortUrl) {
+        handleNotFound();
+        return;
+      }
+
+      try {
+        const { originalUrl } = await redirectLink({ shortUrl });
+
+        if (originalUrl) {
+          window.location.href = originalUrl;
+        } else {
+          handleNotFound();
+        }
+      } catch (error) {
+        console.error("Error in redirect:", error);
+        handleNotFound();
+      }
+    }
+
+    function handleNotFound() {
+      navigate(`link/not-found`);
+    }
+
+    redirect();
+  }, [shortUrl, navigate]);
+
   return (
     <div className="flex min-h-dvh min-w-90 items-center justify-center bg-gray-200 px-3">
       <div className="flex w-full max-w-[580px] flex-col items-center gap-6 rounded-xl bg-white px-5 py-16 shadow lg:px-12">

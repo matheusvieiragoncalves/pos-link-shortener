@@ -6,7 +6,7 @@ import { faker } from '@faker-js/faker';
 import request from 'supertest';
 import { app } from '../app';
 
-describe('Get Link By Short URL And Redirect e2e', () => {
+describe('Get Link By Short URL e2e', () => {
   beforeAll(async () => {
     await app.ready();
   });
@@ -24,9 +24,10 @@ describe('Get Link By Short URL And Redirect e2e', () => {
     await db.insert(schema.links).values(link);
 
     const response = await request(app.server)
-      .get(`/links/${link.shortUrl}/redirect`)
+      .get(`/links/${link.shortUrl}`)
       .send();
 
-    expect(response.statusCode).toEqual(302);
+    expect(response.statusCode).toEqual(200);
+    expect(response.body.originalUrl).toEqual(link.originalUrl);
   });
 });

@@ -11,7 +11,7 @@
     "test:watch": "dotenv -e .env.test vitest --project unit",
     "test:e2e:watch": "dotenv -e .env.test vitest --project e2e",
     "pretest:e2e": "tsx --env-file .env.test test/utils/reset-database.ts && npm run db:migrate:test",
-    "pretest:e2e:watch": "npm run db:migrate:test",
+    "pretest:e2e:watch": "tsx --env-file .env.test test/utils/reset-database.ts && npm run db:migrate:test",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",

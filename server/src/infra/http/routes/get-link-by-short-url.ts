@@ -4,23 +4,23 @@ import { isRight, unwrapEither } from '@/shared/either';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
 
-export const getLinkByShortUrlAndRedirectRoute: FastifyPluginAsyncZod = async (
-  app
-) => {
+export const getLinkByShortUrlRoute: FastifyPluginAsyncZod = async (app) => {
   const linksRepository = new DrizzleLinksRepository();
   const getLinkByShortUrlUseCase = new GetLinkByShortUrlUseCase(
     linksRepository
   );
 
   app.get(
-    '/links/:shortUrl/redirect',
+    '/links/:shortUrl',
     {
       schema: {
         params: z.object({
           shortUrl: z.string()
         }),
         response: {
-          302: z.null(),
+          200: z.object({
+            originalUrl: z.string().url()
+          }),
           404: z.object({
             message: z.string()
           })
@@ -37,7 +37,7 @@ export const getLinkByShortUrlAndRedirectRoute: FastifyPluginAsyncZod = async (
       if (isRight(result)) {
         const { link } = unwrapEither(result);
 
-        return reply.redirect(link.originalUrl);
+        return reply.status(200).send({ originalUrl: link.originalUrl });
       }
 
       const error = unwrapEither(result);

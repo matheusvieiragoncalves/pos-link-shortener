@@ -3,6 +3,7 @@ import type { ILink } from "../@types/ILink";
 import { LinkItem } from "./link-item";
 import { LinkListEmpty } from "./link-list-empty";
 import { Button } from "./ui/button";
+import { LoadingBar } from "./ui/loading-bar";
 
 export function LinkList() {
   const links: ILink[] = Array(20).fill({
@@ -11,8 +12,12 @@ export function LinkList() {
     accessCount: 30,
   });
 
+  const isLoading = false;
+
   return (
-    <div className="max-h-[100%] w-full overflow-scroll rounded-xl bg-white p-6 pb-3 shadow">
+    <div className="relative max-h-[100%] w-full overflow-scroll rounded-xl bg-white p-6 pb-3 shadow">
+      {isLoading && <LoadingBar />}
+
       <div className="mb-4 flex items-center justify-between">
         <h3 className="text-lg font-bold text-gray-900">Meus links</h3>
 

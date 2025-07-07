@@ -13,7 +13,7 @@ export function LinkList() {
 
   useEffect(() => {
     fetchLinks();
-  });
+  }, []);
 
   return (
     <div className="relative max-h-[100%] w-full overflow-scroll rounded-xl bg-white p-6 pb-3 shadow">

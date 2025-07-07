@@ -5,7 +5,7 @@ interface IFetchLinksParams {
   pageSize?: number;
 }
 
-const BASE_URL = "http://192.168.1.17:3333/links";
+const BASE_URL = "http://localhost:3333/links";
 
 export async function fetchLinksToAPI({
   cursor,
@@ -37,7 +37,7 @@ export async function fetchLinksToAPI({
       nextCursor,
     };
   } catch (error) {
-    console.error("Error fetching links:", error);
+    console.log("Error fetching links:", error);
     throw new Error("Failed to fetch links");
   }
 }

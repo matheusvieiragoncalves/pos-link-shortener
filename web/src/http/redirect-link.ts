@@ -2,7 +2,7 @@ interface IRedirectLinkParams {
   shortUrl: string;
 }
 
-const BASE_URL = "http://192.168.1.17:3333/links";
+const BASE_URL = "http://localhost:3333/links";
 
 export async function redirectLink({
   shortUrl,

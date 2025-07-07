@@ -38,9 +38,12 @@ export const useLinks = create<TLinksState, [["zustand/immer", never]]>(
           state.nextCursor = nextCursor;
           state.isLoading = false;
         });
-      } catch (error) {
-        console.error("Error fetching links:", error);
-        throw new Error("Failed to fetch links");
+      } catch {
+        set((state) => {
+          state.isLoading = false;
+          state.nextCursor = null;
+          state.links.clear();
+        });
       }
     }
 

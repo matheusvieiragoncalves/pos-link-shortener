@@ -1,5 +1,6 @@
 import { type ComponentProps } from "react";
 import { tv, type VariantProps } from "tailwind-variants";
+import { InputErrorMessage } from "./input-error-message";
 
 const inputVariants = tv({
   base: "placeholder:text-md w-full rounded-md border border-gray-300 px-[16px] py-[12px] text-gray-600 outline-none placeholder:text-gray-400",
@@ -25,9 +26,10 @@ const labelVariants = tv({
 type TButtonProps = ComponentProps<"input"> &
   VariantProps<typeof inputVariants> & {
     label: string;
+    error?: string;
   };
 
-export function InputText({ status, label, ...props }: TButtonProps) {
+export function InputText({ status, label, error, ...props }: TButtonProps) {
   return (
     <label className="flex flex-col gap-[6px]">
       <span className={labelVariants({ status })}>{label}</span>
@@ -37,6 +39,8 @@ export function InputText({ status, label, ...props }: TButtonProps) {
         className={inputVariants({ status })}
         {...props}
       ></input>
+
+      {error && <InputErrorMessage error={error} />}
     </label>
   );
 }

@@ -4,6 +4,7 @@ import { immer } from "zustand/middleware/immer";
 import type { ILink } from "../@types/link";
 import { createLinkAPI, type ICreateLinkParams } from "../http/create-link";
 import { fetchLinksToAPI } from "../http/fetch-links";
+import { useToast } from "./toast";
 
 type TLinksState = {
   links: Map<string, ILink>;
@@ -70,6 +71,10 @@ export const useLinks = create<TLinksState, [["zustand/immer", never]]>(
         set((state) => {
           state.isLoading = false;
         });
+
+        useToast
+          .getState()
+          .show({ title: "Erro no cadastro", message: "Essa URL já existe" });
 
         console.log(error);
       }

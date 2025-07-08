@@ -12,8 +12,14 @@ export async function fetchLinksToAPI({
   pageSize,
 }: IFetchLinksParams): Promise<{ links: ILink[]; nextCursor: number | null }> {
   try {
-    const url =
-      BASE_URL + `?cursor=${cursor}&pageSize=${pageSize}&sortDirection=desc`;
+    let url = BASE_URL;
+
+    if (cursor !== 0) {
+      url += `?cursor=${cursor}`;
+    }
+
+    url += url.includes("?") ? "&" : "?";
+    url += `pageSize=${pageSize}&sortDirection=desc`;
 
     const response = await fetch(url, {
       method: "GET",

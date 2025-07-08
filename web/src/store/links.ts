@@ -30,7 +30,7 @@ export const useLinks = create<TLinksState, [["zustand/immer", never]]>(
       try {
         const { links, nextCursor } = await fetchLinksToAPI({
           cursor,
-          pageSize: 10,
+          pageSize: 20,
         });
 
         set((state) => {

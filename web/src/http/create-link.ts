@@ -20,7 +20,7 @@ export async function createLinkAPI({
       body: JSON.stringify({ shortUrl, originalUrl }),
     });
 
-    if (response.status !== 201) {
+    if (response.status !== 200) {
       const { message } = await response.json();
 
       throw new Error(message);

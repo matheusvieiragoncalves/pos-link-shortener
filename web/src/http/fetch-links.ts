@@ -1,8 +1,8 @@
 import type { ILink } from "../@types/link";
 
 interface IFetchLinksParams {
-  cursor?: number;
-  pageSize?: number;
+  cursor: number;
+  pageSize: number;
 }
 
 const BASE_URL = "http://localhost:3333/links";
@@ -12,16 +12,8 @@ export async function fetchLinksToAPI({
   pageSize,
 }: IFetchLinksParams): Promise<{ links: ILink[]; nextCursor: number | null }> {
   try {
-    let url = BASE_URL;
-
-    if (cursor) {
-      url += `?cursor=${cursor}`;
-    }
-
-    if (pageSize) {
-      url += !url.includes("?") ? "?" : "&";
-      url += `pageSize=${pageSize}`;
-    }
+    const url =
+      BASE_URL + `?cursor=${cursor}&pageSize=${pageSize}&sortDirection=desc`;
 
     const response = await fetch(url, {
       method: "GET",

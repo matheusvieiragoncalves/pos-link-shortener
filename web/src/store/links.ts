@@ -2,14 +2,15 @@ import { enableMapSet } from "immer";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import type { ILink } from "../@types/link";
+import { createLinkAPI, type ICreateLinkParams } from "../http/create-link";
 import { fetchLinksToAPI } from "../http/fetch-links";
 
 type TLinksState = {
   links: Map<string, ILink>;
   nextCursor: number | null;
   isLoading: boolean;
-  fetchLinks: (cursor?: number, pageSize?: number) => void;
-  addLink: (link: ILink) => void;
+  fetchLinks: () => void;
+  addLink: (link: ICreateLinkParams) => void;
 };
 
 enableMapSet();
@@ -47,10 +48,31 @@ export const useLinks = create<TLinksState, [["zustand/immer", never]]>(
       }
     }
 
-    function addLink(link: ILink) {
+    async function addLink(params: ICreateLinkParams) {
       set((state) => {
-        state.links.set(link.id.toString(), link);
+        state.isLoading = true;
       });
+
+      try {
+        const result = await createLinkAPI(params);
+
+        const { id, originalUrl, shortUrl, accessCount } = result;
+
+        set((state) => {
+          state.links = new Map([
+            [id.toString(), { id, originalUrl, shortUrl, accessCount }],
+            ...state.links,
+          ]);
+
+          state.isLoading = false;
+        });
+      } catch (error) {
+        set((state) => {
+          state.isLoading = false;
+        });
+
+        console.log(error);
+      }
     }
 
     return {

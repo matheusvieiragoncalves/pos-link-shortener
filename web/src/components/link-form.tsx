@@ -4,6 +4,7 @@ import { InputText } from "./ui/input-text";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod/v4";
+import { useLinks } from "../store/links";
 
 const noSpecialCharsRegex = /^[a-z0-9]+$/;
 
@@ -24,6 +25,8 @@ const schema = z.object({
 type TFormData = z.infer<typeof schema>;
 
 export function LinkForm() {
+  const addLink = useLinks((state) => state.addLink);
+
   const {
     register,
     handleSubmit,
@@ -33,7 +36,7 @@ export function LinkForm() {
   });
 
   const onSubmit = (data: TFormData) => {
-    console.log("Validação OK:", data);
+    addLink(data);
   };
 
   return (
@@ -53,7 +56,7 @@ export function LinkForm() {
         <InputText
           {...register("shortUrl")}
           label="Link encurtado"
-          placeholder="brev.ly/"
+          prefix="brev.ly/"
           error={errors.shortUrl?.message}
         />
       </div>

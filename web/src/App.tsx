@@ -1,6 +1,6 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { HomePage } from "./screens/home";
-import { NotFoundPage } from "./screens/notFound";
+import { NotFoundPage } from "./screens/not-found";
 import { RedirectPage } from "./screens/redirect";
 
 function App() {

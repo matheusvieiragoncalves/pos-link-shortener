@@ -3,6 +3,7 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import type { ILink } from "../@types/link";
 import { createLinkAPI, type ICreateLinkParams } from "../http/create-link";
+import { deleteLinkAPI } from "../http/delete-link";
 import { fetchLinksToAPI } from "../http/fetch-links";
 import { useToast } from "./toast";
 
@@ -12,6 +13,7 @@ type TLinksState = {
   isLoading: boolean;
   fetchLinks: () => void;
   addLink: (link: ICreateLinkParams) => void;
+  deleteLink: (id: number) => void;
 };
 
 enableMapSet();
@@ -92,12 +94,50 @@ export const useLinks = create<TLinksState, [["zustand/immer", never]]>(
       }
     }
 
+    async function deleteLink(id: number) {
+      const link = get().links.get(id.toString());
+
+      if (!link) return;
+
+      set((state) => {
+        state.isLoading = true;
+      });
+
+      try {
+        const { shortUrl } = link;
+
+        await deleteLinkAPI({ shortUrl });
+
+        set((state) => {
+          state.links.delete(id.toString());
+          state.isLoading = false;
+        });
+
+        useToast.getState().addToast({
+          title: "Link removido",
+          message: "Link removido com sucesso",
+          type: "success",
+        });
+      } catch {
+        set((state) => {
+          state.isLoading = false;
+        });
+
+        useToast.getState().addToast({
+          title: "Erro na exclusão",
+          message: "Não foi possível remover o link",
+          type: "error",
+        });
+      }
+    }
+
     return {
       links: new Map(),
       nextCursor: 0,
       isLoading: false,
       fetchLinks,
       addLink,
+      deleteLink,
     };
   }),
 );

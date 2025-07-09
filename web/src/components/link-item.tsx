@@ -1,13 +1,15 @@
 import { CopyIcon, TrashIcon } from "@phosphor-icons/react";
 import { Link } from "react-router-dom";
 import type { ILink } from "../@types/link";
+import { useLinks } from "../store/links";
 import { useToast } from "../store/toast";
 import { Button } from "./ui/button";
 
 type TProps = ILink;
 
-export function LinkItem({ originalUrl, shortUrl, accessCount }: TProps) {
+export function LinkItem({ id, originalUrl, shortUrl, accessCount }: TProps) {
   const addToast = useToast((state) => state.addToast);
+  const deleteLink = useLinks((state) => state.deleteLink);
 
   function copyUrl(url: string) {
     navigator.clipboard.writeText(url);
@@ -39,7 +41,7 @@ export function LinkItem({ originalUrl, shortUrl, accessCount }: TProps) {
           <CopyIcon className="h-4 w-4 text-gray-600" />
         </Button>
 
-        <Button theme="secondary">
+        <Button theme="secondary" onClick={() => deleteLink(id)}>
           <TrashIcon className="h-4 w-4 text-gray-600" />
         </Button>
       </div>

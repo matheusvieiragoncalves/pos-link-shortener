@@ -16,7 +16,11 @@ import { getLinkByShortUrlAndRedirectRoute } from './routes/get-link-by-short-ur
 
 const app = fastify();
 
-app.register(fastifyCors, { origin: '*' });
+app.register(fastifyCors, {
+  origin: '*',
+  methods: ['GET', 'POST', 'DELETE'],
+  allowedHeaders: ['Content-Type']
+});
 
 app.setValidatorCompiler(validatorCompiler);
 app.setSerializerCompiler(serializerCompiler);

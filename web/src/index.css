@@ -40,12 +40,25 @@ button {
 
   --animate-border: border 2s ease-in-out infinite;
 
+  --animate-toast-in: toast-in 0.5s ease-in-out;
+
   @keyframes border {
     0% {
       transform: translateX(-100%);
     }
     100% {
       transform: translateX(400%);
+    }
+  }
+
+  @keyframes toast-in {
+    0% {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0px);
     }
   }
 }

@@ -1,44 +1,51 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 
-interface IToastData {
+export interface IToast {
   title: string;
   message: string;
+  type?: "info" | "success" | "error";
+  duration?: number;
 }
 
 type TToastState = {
-  open: boolean;
-  title: string;
-  message: string;
-  duration: number;
-  show: (data: IToastData, duration?: number) => void;
-  close: () => void;
+  toasts: Map<string, IToast>;
+  addToast: (toast: IToast) => void;
+  removeToast: (toastId: string) => void;
 };
 
 export const useToast = create<TToastState>()(
-  immer((set) => {
-    function show({ title, message }: IToastData, duration = 3000) {
+  immer((set, get) => {
+    function addToast({
+      title,
+      message,
+      duration = 3000,
+      type = "info",
+    }: IToast) {
       set((state) => {
-        state.title = title;
-        state.message = message;
-        state.duration = duration;
-        state.open = true;
+        state.toasts.set(Date.now().toString(), {
+          title,
+          message,
+          duration,
+          type,
+        });
       });
     }
 
-    function close() {
+    function removeToast(toastId: string) {
+      const toast = get().toasts.get(toastId);
+
+      if (!toast) return;
+
       set((state) => {
-        state.open = false;
+        state.toasts.delete(toastId);
       });
     }
 
     return {
-      open: false,
-      title: "",
-      message: "",
-      duration: 3000,
-      show,
-      close,
+      toasts: new Map(),
+      addToast,
+      removeToast,
     };
   }),
 );

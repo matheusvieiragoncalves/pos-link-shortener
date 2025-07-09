@@ -1,11 +1,23 @@
 import { CopyIcon, TrashIcon } from "@phosphor-icons/react";
 import { Link } from "react-router-dom";
 import type { ILink } from "../@types/link";
+import { useToast } from "../store/toast";
 import { Button } from "./ui/button";
 
 type TProps = ILink;
 
 export function LinkItem({ originalUrl, shortUrl, accessCount }: TProps) {
+  const addToast = useToast((state) => state.addToast);
+
+  function copyUrl(url: string) {
+    navigator.clipboard.writeText(url);
+
+    addToast({
+      title: "Link copiado!",
+      message: "O link foi copiado para a área de transferência.",
+    });
+  }
+
   const prefix = window.location.origin.replace(/^https?:\/\//, "");
   const path = `${prefix}/${shortUrl}`;
 
@@ -23,10 +35,7 @@ export function LinkItem({ originalUrl, shortUrl, accessCount }: TProps) {
         </span>
       </div>
       <div className="flex flex-row items-center gap-1">
-        <Button
-          theme="secondary"
-          onClick={() => navigator.clipboard.writeText(shortUrl)}
-        >
+        <Button theme="secondary" onClick={() => copyUrl(path)}>
           <CopyIcon className="h-4 w-4 text-gray-600" />
         </Button>
 

@@ -44,7 +44,13 @@ export const useLinks = create<TLinksState, [["zustand/immer", never]]>(
         set((state) => {
           state.isLoading = false;
           state.nextCursor = null;
-          state.links.clear();
+        });
+
+        useToast.getState().addToast({
+          title: "Erro ao buscar links",
+          message:
+            "Não foi possível buscar os links, tente novamente mais tarde.",
+          type: "error",
         });
       }
     }
@@ -67,16 +73,22 @@ export const useLinks = create<TLinksState, [["zustand/immer", never]]>(
 
           state.isLoading = false;
         });
-      } catch (error) {
+
+        useToast.getState().addToast({
+          title: "Cadastro realizado",
+          message: "Links registrado com sucesso",
+          type: "success",
+        });
+      } catch {
         set((state) => {
           state.isLoading = false;
         });
 
-        useToast
-          .getState()
-          .show({ title: "Erro no cadastro", message: "Essa URL já existe" });
-
-        console.log(error);
+        useToast.getState().addToast({
+          title: "Erro no cadastro",
+          message: "Não foi possível cadastrar o link",
+          type: "error",
+        });
       }
     }
 

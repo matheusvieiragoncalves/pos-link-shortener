@@ -4,7 +4,9 @@ import { immer } from "zustand/middleware/immer";
 import type { ILink } from "../@types/link";
 import { createLinkAPI, type ICreateLinkParams } from "../http/create-link";
 import { deleteLinkAPI } from "../http/delete-link";
+import { exportCSVLinksAPI } from "../http/export-csv-links";
 import { fetchLinksToAPI } from "../http/fetch-links";
+import { downloadUrl } from "../utils/download-url";
 import { useToast } from "./toast";
 
 type TLinksState = {
@@ -14,6 +16,7 @@ type TLinksState = {
   fetchLinks: () => void;
   addLink: (link: ICreateLinkParams) => void;
   deleteLink: (id: number) => void;
+  exportCSVLinks: () => void;
 };
 
 enableMapSet();
@@ -131,6 +134,39 @@ export const useLinks = create<TLinksState, [["zustand/immer", never]]>(
       }
     }
 
+    async function exportCSVLinks() {
+      set((state) => {
+        state.isLoading = true;
+      });
+
+      try {
+        const { url } = await exportCSVLinksAPI();
+
+        await downloadUrl(url);
+
+        set((state) => {
+          state.isLoading = false;
+        });
+
+        useToast.getState().addToast({
+          title: "Exportação realizada",
+          message:
+            "Links exportados com sucesso, verifique sua pasta de downloads",
+          type: "success",
+        });
+      } catch {
+        set((state) => {
+          state.isLoading = false;
+        });
+
+        useToast.getState().addToast({
+          title: "Erro na exportação",
+          message: "Não foi possível exportar os links para CSV",
+          type: "error",
+        });
+      }
+    }
+
     return {
       links: new Map(),
       nextCursor: 0,
@@ -138,6 +174,7 @@ export const useLinks = create<TLinksState, [["zustand/immer", never]]>(
       fetchLinks,
       addLink,
       deleteLink,
+      exportCSVLinks,
     };
   }),
 );

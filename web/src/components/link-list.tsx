@@ -12,6 +12,7 @@ export function LinkList() {
   const isLoading = useLinks((store) => store.isLoading);
   const nextCursor = useLinks((store) => store.nextCursor);
   const fetchLinks = useLinks((store) => store.fetchLinks);
+  const exportCSVLinks = useLinks((store) => store.exportCSVLinks);
 
   const observerRef = useRef<HTMLDivElement | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
@@ -49,9 +50,10 @@ export function LinkList() {
         <h3 className="text-lg font-bold text-gray-900">Meus links</h3>
 
         <Button
-          disabled
+          disabled={isLoading || !links?.size}
           className="flex max-w-26 flex-row gap-1.5 text-sm font-semibold"
           theme="secondary"
+          onClick={() => exportCSVLinks()}
         >
           <CopyIcon className="h-4 w-4" />
           Baixar CSV

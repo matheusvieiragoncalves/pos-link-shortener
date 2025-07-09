@@ -26,18 +26,21 @@ type TFormData = z.infer<typeof schema>;
 
 export function LinkForm() {
   const addLink = useLinks((state) => state.addLink);
+  const isLoading = useLinks((state) => state.isLoading);
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<TFormData>({
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = (data: TFormData) => {
-    addLink(data);
-  };
+  async function onSubmit(data: TFormData) {
+    const { created } = await addLink(data);
+    if (created) reset();
+  }
 
   return (
     <form
@@ -61,7 +64,9 @@ export function LinkForm() {
         />
       </div>
 
-      <Button type="submit">Salvar link</Button>
+      <Button disabled={isLoading} type="submit">
+        Salvar link
+      </Button>
     </form>
   );
 }

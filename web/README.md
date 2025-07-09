@@ -3,12 +3,12 @@
 
 ## RF (Requisitos funcionais)
 
-  - [ ]  Deve ser possível criar um link;
-  - [ ]  Deve ser possível deletar um link;
+  - [x]  Deve ser possível criar um link;
+  - [x]  Deve ser possível deletar um link;
   - [x]  Deve ser possível obter a URL original por meio do encurtamento;
-  - [ ]  Deve ser possível listar todas as URL’s cadastradas;
+  - [x]  Deve ser possível listar todas as URL’s cadastradas;
   - [x]  Deve ser possível incrementar a quantidade de acessos de um link;
-  - [ ]  Deve ser possível baixar um CSV com o relatório dos links criados.
+  - [x]  Deve ser possível baixar um CSV com o relatório dos links criados.
 
 ## RN (Regras de negócio)
 
@@ -23,9 +23,9 @@
 
 ## RNF (Requisitos não funcionais)
 
-  - [X]  É obrigatória a criação de uma aplicação React no formato SPA utilizando o Vite como `bundler`;
-  - [ ]  Trabalhe com elementos que tragam uma boa experiência ao usuário (`empty state`, ícones de carregamento, bloqueio de ações a depender do estado da aplicação);
+  - [x]  É obrigatória a criação de uma aplicação React no formato SPA utilizando o Vite como `bundler`;
+  - [x]  Trabalhe com elementos que tragam uma boa experiência ao usuário (`empty state`, ícones de carregamento, bloqueio de ações a depender do estado da aplicação);
   - [x]  Foco na responsividade: essa aplicação deve ter um bom uso tanto em desktops quanto em celulares;
-  - [X]  Obrigatório o uso de Typescript;
-  - [X]  Obrigatório o uso de React;
-  - [X]  Obrigatório o uso de Vite sem framework.
+  - [x]  Obrigatório o uso de Typescript;
+  - [x]  Obrigatório o uso de React;
+  - [x]  Obrigatório o uso de Vite sem framework.

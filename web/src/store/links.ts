@@ -14,7 +14,7 @@ type TLinksState = {
   nextCursor: number | null;
   isLoading: boolean;
   fetchLinks: () => void;
-  addLink: (link: ICreateLinkParams) => void;
+  addLink: (link: ICreateLinkParams) => Promise<{ created: boolean }>;
   deleteLink: (id: number) => void;
   exportCSVLinks: () => void;
 };
@@ -60,7 +60,9 @@ export const useLinks = create<TLinksState, [["zustand/immer", never]]>(
       }
     }
 
-    async function addLink(params: ICreateLinkParams) {
+    async function addLink(
+      params: ICreateLinkParams,
+    ): Promise<{ created: boolean }> {
       set((state) => {
         state.isLoading = true;
       });
@@ -84,6 +86,8 @@ export const useLinks = create<TLinksState, [["zustand/immer", never]]>(
           message: "Links registrado com sucesso",
           type: "success",
         });
+
+        return { created: true };
       } catch {
         set((state) => {
           state.isLoading = false;
@@ -91,9 +95,11 @@ export const useLinks = create<TLinksState, [["zustand/immer", never]]>(
 
         useToast.getState().addToast({
           title: "Erro no cadastro",
-          message: "Não foi possível cadastrar o link",
+          message: "Essa url encurtada já existe ou é inválida",
           type: "error",
         });
+
+        return { created: false };
       }
     }
 

@@ -16,9 +16,9 @@ export function NotFoundPage() {
         <div className="text-md flex flex-col gap-1 text-center text-gray-500 lg:w-[484px]">
           <p>
             O link que você está tentando acessar não existe, foi removido ou é
-            uma URL inválida.
+            uma URL inválida. Saiba mais em{" "}
             <Link className="text-blue-base underline" to="/">
-              Saiba mais em brev.ly.
+              brev.ly.
             </Link>
           </p>
         </div>

@@ -1,14 +1,63 @@
-version: '3'
+# version: '3'
 
 services:
-  pg:
-    image: bitnami/postgresql
+  db:
+    image: postgres:latest
+    container_name: postgres
+    restart: unless-stopped
     ports:
-      - 5432:5432
+      - 5432:$POSTGRES_PORT
     environment:
-      - POSTGRESQL_USERNAME=docker
-      - POSTGRESQL_PASSWORD=docker
-      - POSTGRESQL_DATABASE=link_shortener
-
+      - POSTGRES_USER=$POSTGRES_USER
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+      - POSTGRES_DB=$POSTGRES_DB
     volumes:
-      - './docker:/docker-entrypoint-initdb.d'
+      - db:/var/lib/postgresql/data
+    networks:
+      - link-shortener
+      - db
+
+  app:
+    build: .
+    depends_on:
+      - db
+    container_name: link-shortener-server
+    restart: unless-stopped
+    ports:
+      - 3000:$PORT
+    environment:
+      - DATABASE_URL=$DATABASE_URL
+      - CLOUDFLARE_ACCOUNT_ID=$CLOUDFLARE_ACCOUNT_ID
+      - CLOUDFLARE_ACCESS_KEY_ID=$CLOUDFLARE_ACCESS_KEY_ID
+      - CLOUDFLARE_ACCESS_SECRET_KEY=$CLOUDFLARE_ACCESS_SECRET_KEY
+      - CLOUDFLARE_BUCKET_NAME=$CLOUDFLARE_BUCKET_NAME
+      - CLOUDFLARE_BUCKET_PUBLIC_URL=$CLOUDFLARE_BUCKET_PUBLIC_URL
+    networks:
+      - link-shortener
+
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile.migrate
+    depends_on:
+      - db
+    command: ['npm', 'run', 'db:migrate']
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - CLOUDFLARE_ACCOUNT_ID=${CLOUDFLARE_ACCOUNT_ID}
+      - CLOUDFLARE_ACCESS_KEY_ID=${CLOUDFLARE_ACCESS_KEY_ID}
+      - CLOUDFLARE_ACCESS_SECRET_KEY=${CLOUDFLARE_ACCESS_SECRET_KEY}
+      - CLOUDFLARE_BUCKET_NAME=${CLOUDFLARE_BUCKET_NAME}
+      - CLOUDFLARE_BUCKET_PUBLIC_URL=${CLOUDFLARE_BUCKET_PUBLIC_URL}
+    networks:
+      - link-shortener
+
+volumes:
+  db:
+    driver: local
+
+networks:
+  link-shortener:
+    driver: bridge
+  db:
+    driver: bridge

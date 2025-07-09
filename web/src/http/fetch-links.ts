@@ -5,7 +5,7 @@ interface IFetchLinksParams {
   pageSize: number;
 }
 
-const BASE_URL = "http://localhost:3333/links";
+const BASE_URL = import.meta.env.VITE_BACKEND_URL + "/links";
 
 export async function fetchLinksToAPI({
   cursor,

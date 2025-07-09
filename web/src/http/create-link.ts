@@ -5,7 +5,7 @@ export interface ICreateLinkParams {
   originalUrl: string;
 }
 
-const BASE_URL = "http://localhost:3333/links";
+const BASE_URL = import.meta.env.VITE_BACKEND_URL + "/links";
 
 export async function createLinkAPI({
   shortUrl,

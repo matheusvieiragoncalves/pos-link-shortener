@@ -20,7 +20,7 @@ export function LinkItem({ id, originalUrl, shortUrl, accessCount }: TProps) {
     });
   }
 
-  const prefix = window.location.origin.replace(/^https?:\/\//, "");
+  const prefix = import.meta.env.VITE_FRONTEND_URL.replace(/^https?:\/\//, "");
   const path = `${prefix}/${shortUrl}`;
 
   return (
